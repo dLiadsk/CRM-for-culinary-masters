@@ -12,20 +12,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuReaction {
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn
-    private User user;
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn
-    private Menu menu;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long reactionId;
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @JoinColumn
+   private User user;
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @JoinColumn
+   private Menu menu;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "ID")
+   private Long reactionId;
 
 
-    @Column(name = "reaction")
-    private Byte reaction;
+   @Column(name = "reaction")
+   private Byte reaction;
 
 
 }

@@ -1,17 +1,17 @@
-package com.example.crm.services;
+ package com.example.crm.services;
 
 
-import com.example.crm.models.User;
-import com.example.crm.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+ import com.example.crm.models.User;
+ import com.example.crm.repositories.UserRepository;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.security.core.userdetails.UserDetails;
+ import org.springframework.security.core.userdetails.UserDetailsService;
+ import org.springframework.security.core.userdetails.UsernameNotFoundException;
+ import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+ @Service
+ @RequiredArgsConstructor
+ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
 
@@ -23,4 +23,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return (UserDetails) user;
     }
-}
+ }

@@ -1,22 +1,22 @@
-package com.example.crm.configurations;
+ package com.example.crm.configurations;
 
-import com.example.crm.services.CustomUserDetailsService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+ import com.example.crm.services.CustomUserDetailsService;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.context.annotation.Bean;
+ import org.springframework.context.annotation.Configuration;
+ import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+ import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+ import org.springframework.security.crypto.password.PasswordEncoder;
+ import org.springframework.security.web.SecurityFilterChain;
 
 
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig {
+ @Configuration
+ @EnableWebSecurity
+ @RequiredArgsConstructor
+ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
@@ -26,10 +26,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/").permitAll()
-                                .requestMatchers("").authenticated()
+                                .requestMatchers("api/recipes").permitAll()
+                                .requestMatchers("api/test").permitAll()
+
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
@@ -50,5 +52,5 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
-}
+ }
 

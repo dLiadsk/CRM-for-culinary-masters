@@ -14,23 +14,23 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn
-    private User user;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long menuId;
-    @Column(name = "name")
-    private String name;
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @JoinColumn
+   private User user;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "ID")
+   private Long menuId;
+   @Column(name = "name")
+   private String name;
 
-    @Column(name = "description")
-    private String description;
+   @Column(name = "description")
+   private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "menu_recipes",
-            joinColumns = @JoinColumn(name = "menu_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-    Set<Recipe> recipes;
+   @ManyToMany
+   @JoinTable(
+           name = "menu_recipes",
+           joinColumns = @JoinColumn(name = "menu_id"),
+           inverseJoinColumns = @JoinColumn(name = "recipe_id"))
+   Set<Recipe> recipes;
 }

@@ -15,31 +15,31 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Recipe {
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn
-    private User user;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long recipeId;
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @JoinColumn
+   private User user;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "ID")
+   private Long recipeId;
 
-    @ManyToMany(mappedBy = "recipes")
-    Set<Menu> menus;
+   @ManyToMany(mappedBy = "recipes")
+   Set<Menu> menus;
 
-    @Column(name = "name")
-    private String name;
+   @Column(name = "name")
+   private String name;
 
-    @Column(name = "description")
-    private String description;
+   @Column(name = "description")
+   private String description;
 
-    @Column(name = "cook_time")
-    private String cookTime;
+   @Column(name = "cook_time")
+   private String cookTime;
 
-    @Column(name = "publish_date")
-    private Date publishDate;
+   @Column(name = "publish_date")
+   private Date publishDate;
 
-    @PrePersist
-    public void init() {
-        publishDate = new Date();
-    }
+   @PrePersist
+   public void init() {
+       publishDate = new Date();
+   }
 }

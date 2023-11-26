@@ -13,33 +13,33 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long userId;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "ID")
+   private Long userId;
 
-    @Column(name = "username")
-    private String username;
+   @Column(name = "username")
+   private String username;
 
-    @Column(name = "email", unique = true)
-    private String email;
+   @Column(name = "email", unique = true)
+   private String email;
 
-    @Column(name = "password", length = 1000)
-    private String password;
+   @Column(name = "password", length = 1000)
+   private String password;
 
-    @Column(name = "name")
-    private String name;
+   @Column(name = "name")
+   private String name;
 
-    @Column(name = "surname")
-    private String surname;
+   @Column(name = "surname")
+   private String surname;
 
-    @Column(name = "birthday")
-    private Date birthday;
+   @Column(name = "birthday")
+   private Date birthday;
 
-    @Column(name = "phone")
-    private Integer phone;
+   @Column(name = "phone")
+   private Integer phone;
 
-    @Column(name = "country")
-    private String country;
+   @Column(name = "country")
+   private String country;
 
 }

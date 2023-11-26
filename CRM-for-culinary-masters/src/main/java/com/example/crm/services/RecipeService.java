@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
-    private final RecipeRepository recipeRepository;
-    public boolean createRecipe(Recipe recipe){
-        recipeRepository.save(recipe);
-        return true;
-    }
+   private final RecipeRepository recipeRepository;
+   public boolean createRecipe(Recipe recipe){
+       recipeRepository.save(recipe);
+       return true;
+   }
 }

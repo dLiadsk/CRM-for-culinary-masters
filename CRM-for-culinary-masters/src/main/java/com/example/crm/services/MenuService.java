@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MenuService {
-    private final MenuRepository menuRepository;
+   private final MenuRepository menuRepository;
 
-    public boolean createRecipe(Menu menu) {
-        menuRepository.save(menu);
-        return true;
-    }
+   public boolean createRecipe(Menu menu) {
+       menuRepository.save(menu);
+       return true;
+   }
 
 }
