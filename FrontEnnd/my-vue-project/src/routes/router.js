@@ -10,6 +10,7 @@ import recipesPage from '@/components/recipesPage.vue';
 import menuPage from '@/components/menuPage.vue';
 import createRecipePage from '@/components/createRecipePage.vue';
 import createMenuPage from '@/components/createMenuPage.vue';
+import loginPage from '@/components/loginPage.vue';
 
 const history = createWebHistory();
 const router = createRouter({
@@ -58,6 +59,10 @@ const router = createRouter({
         {
             path: '/createMenu',
             component: createMenuPage
+        },
+        {
+            path: '/login',
+            component: loginPage
         }
     ]
 })

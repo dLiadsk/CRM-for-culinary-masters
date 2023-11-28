@@ -50,7 +50,8 @@
                     <div class="mx-3">
                       <h5 class="mb-3"><i class="fa-solid fa-clock fa-fw fa-2xl"></i></h5>
                       <small>Час приготування</small>
-                      <p class="ms-4"><input v-model="preparationTime" class="form-control" type="time" required style="width: 70px;" /></p>
+                      <p class="ms-4"><input v-model="preparationTime" class="form-control" type="time" required
+                          style="width: 70px;" /></p>
                     </div>
                     <div class="divider"></div>
                     <div class="mx-3">
@@ -70,14 +71,15 @@
                   <li class="list-group-item" style="font-size: large">
                     <h4 class="mb-2">Інгрідієнти:</h4>
                     <ul class="mb-0 list-unstyled">
-                      <li v-for="(ingredient, index) in newRecipe.ingredients" :key="index">                        
+                      <li v-for="(ingredient, index) in newRecipe.ingredients" :key="index">
                         <div class="input-group input-group-sm mb-3">
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
                           <input v-model="newRecipe.ingredients[index]" placeholder="Інгредієнт" type="text"
                             class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
-                            <button type="button" class="btn" @click="removeIngredient(index)"><i class="fa-solid fa-trash"></i></button>
+                          <button type="button" class="btn" @click="removeIngredient(index)"><i
+                              class="fa-solid fa-trash"></i></button>
                         </div>
                       </li>
                       <button type="button" class="btn btn-light" @click="addIngredient">Додати інгредієнт</button>
@@ -159,15 +161,16 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
       recipes: [],
       newRecipe: {
         name: '',
-        ingredients: [''],
-        steps: [''],
-        notes: [''],
+        ingredients: '',
+        steps: '',
+        notes: '',
         image: null,
       },
       author: "username",
@@ -200,26 +203,34 @@ export default {
       this.newRecipe.notes.splice(index, 1);
     },
     addRecipe() {
-      this.recipes.push({ ...this.newRecipe });
-      this.newRecipe = {
-        name: '',
-        ingredients: [''],
-        steps: [''],
-        notes: [''],
-        image: null,
-      };
-    },
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.newRecipe.image = reader.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
+      axios.post('http://localhost:8080/api/createRecipe', this.newRecipe)
+        .then(response => {
+          alert("Success" + response.data);
+        })
+        .catch(error => {
+          alert('Error: ' + error.message);  // Display the error message
+          console.error(error);  // Log the entire error object for debugging
+        });
+    this.recipes.push({ ...this.newRecipe });
+    this.newRecipe = {
+      name: '',
+      ingredients: [''],
+      steps: [''],
+      notes: [''],
+      image: null,
+    };
   },
+  handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.newRecipe.image = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  },
+},
 };
 </script>
 
@@ -230,9 +241,9 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
 .divider {
-    border-left: 2px solid #ccc;
-    height: 50px;
-    margin: 0 20px;
-  }
-  </style>
+  border-left: 2px solid #ccc;
+  height: 50px;
+  margin: 0 20px;
+}</style>

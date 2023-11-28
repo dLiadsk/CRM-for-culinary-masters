@@ -8,6 +8,7 @@
               <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item active" aria-current="page"><a href="profile">User Profile</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="createRecipe">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
           </div>
@@ -59,11 +60,12 @@
   </template>
   
   <script>
+  import axios from 'axios';
   export default {
     data() {
       return {
         avatarSrc: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp",
-        username: "Євген Клопотенко",
+        username: "",
         recipes: [
           { id: 1, name: "Перший рецепт" },
           { id: 2, name: "Другий рецепт" },
@@ -81,11 +83,44 @@
       };
     },
     methods: {
-      shareLink() {
-        // Implement your share link logic here
+      getUser(){
+        axios.get('http://localhost:8080/api/user', {withCredentials: true})
+                  .then(response => {
+                      alert("Success" + response.data.first_name)
+                      this.username = response.data.first_name;
+                  })
+                  .catch(error => {
+                    alert("Ви неавторизовані!");
+                      this.$router.push('/login');  // Display the error message
+                      console.error(error);  // Log the entire error object for debugging
+                  });
+      },
+      Logout(){
+        axios.post('http://localhost:8080/api/logout')
+                  .then(response => {
+                      alert("Success" + response.data.message, {withCredentials: true})
+                      localStorage.removeItem('token');
+                      this.$router.push('/login');
+                  })
+                  .catch(error => {
+                      alert('Error: ' + error.message);  // Display the error message
+                      console.error(error);  // Log the entire error object for debugging
+                  });
       },
     },
+    mounted() {
+  // Встановіть токен при створенні компонента
+  const token = localStorage.getItem('token');
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    this.getUser();
+  } else {
+    alert("Ви не авторизовані")
+    this.$router.push('/login');
+  }
+},
   };
+  
   </script>
   
 <style scoped>
