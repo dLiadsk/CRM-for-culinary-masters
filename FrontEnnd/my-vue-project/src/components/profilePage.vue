@@ -86,12 +86,12 @@
       getUser(){
         axios.get('http://localhost:8080/api/user', {withCredentials: true})
                   .then(response => {
-                      alert("Success" + response.data.first_name)
-                      this.username = response.data.first_name;
+                      this.username = response.data.first_name + " " + response.data.last_name;
                   })
                   .catch(error => {
                     alert("Ви неавторизовані!");
-                      this.$router.push('/login');  // Display the error message
+                      this.$router.push('/login');
+                      localStorage.removeItem('token');  // Display the error message
                       console.error(error);  // Log the entire error object for debugging
                   });
       },

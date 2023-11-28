@@ -37,7 +37,7 @@ import axios from 'axios';
                       axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                       const token = response.data.token;
                       localStorage.setItem('token', token);
-                      this.$router.push('/profile');
+                      this.$router.push('/profile');/////
                   })
                   .catch(error => {
                       alert('Error: ' + error.message);  // Display the error message
