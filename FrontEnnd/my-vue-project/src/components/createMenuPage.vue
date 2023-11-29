@@ -20,16 +20,16 @@
           <main class="d-flex justify-content-center align-items-center mb-5 pb-3">
             <div class="container">
               <h2 class="text-center mb-4 pb-4 border-bottom border-4">
-                <input v-model="newRecipe.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
+                <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
               </h2>
               <div class="card" style="width: 81rem;">
                 <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
                   <input type="file" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
-                  <img v-if="newRecipe.image" :src="newRecipe.image" alt="Recipe Image"
+                  <img v-if="newMenu.image" :src="newMenu.image" alt="Recipe Image"
                        style="width: 100%; height: 500px;">
-                  <small v-if="newRecipe.image">Щоб змінити фото натисніть на нього</small>
-                  <div v-if="!newRecipe.image"
+                  <small v-if="newMenu.image">Щоб змінити фото натисніть на нього</small>
+                  <div v-if="!newMenu.image"
                        class="overlay text-center d-flex align-items-center justify-content-center"
                        style="width: 250px; height: 250px; text-align: center;">
                       <span>
@@ -51,7 +51,7 @@
                     <div class="mx-3">
                       <h5 class="mb-3"><i class="fa-solid fa-clock fa-fw fa-2xl"></i></h5>
                       <small style="padding-left: 10px">Час приготування</small>
-                      <p class="ms-3"><input v-model="preparationTime" class="form-control" type="time" required
+                      <p class="ms-3"><input v-model="newMenu.preparationTime" class="form-control" type="time" required
                                              style="width: 100px;"/></p>
                     </div>
                     <div class="divider"></div>
@@ -59,7 +59,7 @@
                       <h5 class="mb-3"><i class="fa-solid fa-star fa-2xl"></i></h5>
                       <small>Складність</small>
                       <p>
-                        <select v-model="complexity" required style="width: 100px;" class="form-control">
+                        <select v-model="newMenu.complexity" required style="width: 100px;" class="form-control">
                           <option v-for="option in complexityOptions" :key="option.value" :value="option.value">
                             {{ option.label }}
                           </option>
@@ -70,18 +70,18 @@
                 </div>
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" style="font-size: large">
-                    <h4 class="mb-2">Інгрідієнти:</h4>
+                    <h4 class="mb-2">Страви:</h4>
                     <ul class="mb-0 list-unstyled">
-                      <li v-for="(ingredient, index) in newRecipe.ingredients" :key="index">
+                      <li v-for="(ingredient, index) in newMenu.recipes" :key="index">
                         <div class="input-group input-group-sm mb-3">
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
-                          <select v-model="newRecipe.selectedIngredients[index]" class="form-control" aria-label=""
+                          <select v-model="newMenu.recipes[index]" class="form-control" aria-label=""
                                   aria-describedby="inputGroup-sizing-sm">
-                            <option value="" disabled selected>Select an ingredient</option>
-                            <option v-for="option in availableIngredients" :key="option" :value="option">{{
-                                option
+                            <option value="" disabled selected>Select an recipe</option>
+                            <option v-for="option in availableRecipes" :key="option" :value="option">{{
+                                option.name
                               }}
                             </option>
                           </select>
@@ -89,19 +89,19 @@
                               class="fa-solid fa-trash"></i></button>
                         </div>
                       </li>
-                      <button type="button" class="btn btn-light" @click="addIngredient">Додати інгредієнт</button>
+                      <button type="button" class="btn btn-light" @click="addIngredient">Додати рецепт</button>
                     </ul>
 
                   </li>
                   <li class="list-group-item">
                     <h4 class="mb-0">Примітки: </h4>
                     <ul class="mb-0 list-unstyled">
-                      <li v-for="(note, index) in newRecipe.notes" :key="index">
+                      <li v-for="(note, index) in mass_notes" :key="index">
                         <div class="input-group input-group-sm mb-3">
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
-                          <input v-model="newRecipe.notes[index]" placeholder="Крок приготування" type="text"
+                          <input v-model="mass_notes[index]" placeholder="Крок приготування" type="text"
                                  class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
                           <button type="button" class="btn" @click="removeNote(index)"><i
                               class="fa-solid fa-trash"></i></button>
@@ -123,102 +123,100 @@
         </div>
       </form>
     </div>
-
-    <!-- Список збережених рецептів -->
-<!--    <div>-->
-<!--      <h2>Збережені рецепти:</h2>-->
-<!--      <ul>-->
-<!--        <li v-for="(recipe, index) in recipes" :key="index">-->
-<!--          <h3>{{ recipe.name }}</h3>-->
-<!--          &lt;!&ndash; Відображення зображення рецепту &ndash;&gt;-->
-<!--          <img :src="recipe.image" alt="Recipe Image" style="max-width: 100%;"/>-->
-
-<!--          <p><strong>Інгредієнти:</strong></p>-->
-<!--          <ul>-->
-<!--            <li v-for="(ingredient, i) in recipe.ingredients" :key="i">{{ ingredient }}</li>-->
-<!--          </ul>-->
-<!--          <p><strong>Приготування:</strong></p>-->
-<!--          <ol>-->
-<!--            <li v-for="(step, i) in recipe.steps" :key="i">{{ step }}</li>-->
-<!--          </ol>-->
-<!--          <p><strong>Примітки</strong></p>-->
-<!--          <ol>-->
-<!--            <li v-for="(note, i) in recipe.notes" :key="i">{{ note }}</li>-->
-<!--          </ol>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </div>-->
   </div>
 </template>
 
 <script>
-import axios from "core-js/internals/queue";
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      recipes: [],
-      newRecipe: {
+      availableRecipes: [],
+      mass_notes: [],
+      newMenu: {
+        user: '',
         name: '',
-        ingredients: [''],
-        steps: [''],
-        notes: [''],
+        notes: '',
         image: null,
-        selectedIngredients: [],
+        preparationTime: '00:00',
+        complexity: '',
+        recipes: [],
       },
       author: "username",
-      preparationTime: '',
-      complexity: '',
+
       complexityOptions: [
         {value: 'easy', label: 'Легко'},
         {value: 'medium', label: 'Середньо'},
         {value: 'hard', label: 'Важко'},
       ],
 
-      availableIngredients: ['Option 1', 'Option 2', 'Option 3'],
+
     };
   },
   methods: {
-    // getUser() {
-    //   axios.get('http://localhost:8080/api/user', { withCredentials: true })
-    //       .then(response => {
-    //         this.author = response.data.user.username;
-    //         this.newRecipe.user = response.data.user;
-    //       })
-    //       .catch(error => {
-    //         alert("Ви неавторизовані!");
-    //         this.$router.push('/login');
-    //         localStorage.removeItem('token');  // Display the error message
-    //         console.error(error);  // Log the entire error object for debugging
-    //       });
-    // },
+    getUser() {
+      axios.get('http://localhost:8080/api/user', { withCredentials: true })
+          .then(response => {
+            this.author = response.data.user.username;
+            this.newMenu.user = response.data.user;
+          })
+          .catch(error => {
+            alert(error);
+            // this.$router.push('/login');
+            localStorage.removeItem('token');  // Display the error message
+            console.error(error);  // Log the entire error object for debugging
+          });
+    },
+    getRecipes() {
+      axios.get('http://localhost:8080/api/recipes')
+          .then(response => {
+            this.availableRecipes = response.data;
+            // this.newRecipe.user = response.data.user;
+    })
+    .catch(error => {
+      alert(error);
+    });
+    },
     addIngredient() {
-      this.newRecipe.ingredients.push('');
-      this.newRecipe.selectedIngredients.push(''); // Додай цей рядок
+      this.newMenu.recipes.push(''); // Додай цей рядок
     },
     removeIngredient(index) {
-      this.newRecipe.ingredients.splice(index, 1);
-    },
-    addStep() {
-      this.newRecipe.steps.push('');
-    },
-    removeStep(index) {
-      this.newRecipe.steps.splice(index, 1);
+      this.newMenu.recipes.splice(index, 1);
     },
     addNote() {
-      this.newRecipe.notes.push('');
+      this.mass_notes.push('');
     },
     removeNote(index) {
-      this.newRecipe.notes.splice(index, 1);
+      this.mass_notes.splice(index, 1);
     },
     addRecipe() {
-      this.recipes.push({...this.newRecipe});
-      this.newRecipe = {
+      // this.recipes.push({...this.newMenu});
+
+      this.newMenu.recipes = this.newMenu.recipes.filter(recipe => recipe !== '');
+      this.mass_notes = this.mass_notes.filter(note => note.trim() !== '');
+
+      this.newMenu.notes = this.mass_notes.join("#")
+
+
+      axios.post('http://localhost:8080/api/createMenu', this.newMenu)
+          .then(response => {
+            alert("Success" + response.data);
+          })
+          .catch(error => {
+            alert('Error: ' + error.message);  // Display the error message
+            console.error(error);  // Log the entire error object for debugging
+          });
+
+
+      this.mass_notes = [];
+      this.newMenu = {
         name: '',
-        ingredients_mass: [''],
-        steps_mass: [''],
-        notes_mass: [''],
+        notes: '',
         image: null,
+        preparationTime: '00:00',
+        complexity: '',
+        recipes: [],
       };
     },
     handleImageUpload(event) {
@@ -226,12 +224,26 @@ export default {
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          this.newRecipe.image = reader.result;
+          this.newMenu.image = reader.result;
         };
         reader.readAsDataURL(file);
       }
     },
   },
+mounted() {
+
+  const token = localStorage.getItem('token');
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    this.getUser();
+  } else {
+    alert("Ви не авторизовані")
+    this.$router.push('/login');
+  }
+  this.getRecipes();
+
+
+  }
 };
 </script>
 
@@ -250,4 +262,3 @@ export default {
   margin: 0 20px;
 }
 </style>
-  
