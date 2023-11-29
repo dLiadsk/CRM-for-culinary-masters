@@ -37,15 +37,16 @@ export default {
       testdata: '',
       }
     },
-    methods:{
-      fetchMessage() {
-      axios.get('http://localhost:8080/api/test')
-      .then(response => {this.testdata = response.data;})
-      .catch(error => {console.error('Error' + error)});
-    }
-    },
     created() {
-      this.fetchMessage();
-    }
+  // Встановіть токен при створенні компонента
+  axios.post('http://localhost:8080/api/refresh',{},{withCredentials: true})
+                  .then(response => {
+                      localStorage.setItem('token',response.data.message);
+                  })
+                  .catch(error => {
+                      alert('Error: ' + error.message);  // Display the error message
+                      console.error(error);  // Log the entire error object for debugging
+                  });
+},
 }
 </script>

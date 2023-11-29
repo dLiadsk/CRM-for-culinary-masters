@@ -11,6 +11,8 @@ import menuPage from '@/components/menuPage.vue';
 import createRecipePage from '@/components/createRecipePage.vue';
 import createMenuPage from '@/components/createMenuPage.vue';
 import loginPage from '@/components/loginPage.vue';
+import Upload from '@/components/uplpadPage.vue';
+import download from '@/components/downloadPage.vue';
 
 const history = createWebHistory();
 const router = createRouter({
@@ -63,7 +65,15 @@ const router = createRouter({
         {
             path: '/login',
             component: loginPage
-        }
+        },
+        {
+            path: '/uplpad',
+            component: Upload
+        },
+        {
+            path: '/download',
+            component: download
+        },
     ]
 })
 

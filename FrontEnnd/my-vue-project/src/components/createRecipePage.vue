@@ -24,9 +24,9 @@
               </h2>
               <div class="card" style="width: 81rem;">
                 <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
-                  <input type="file" accept="image/*" @change="handleImageUpload" id="recipeImage"
+                  <input type="file"  ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
-                  <img v-if="newRecipe.image" :src="newRecipe.image" alt="Recipe Image"
+                  <img v-if="newRecipe.image" :src="imageToShow" alt="Recipe Image"
                        style="width: 100%; height: 500px;">
                   <small v-if="newRecipe.image">Щоб змінити фото натисніть на нього</small>
                   <div v-if="!newRecipe.image"
@@ -183,6 +183,7 @@ export default {
         user: '1',
       },
       author: "username",
+      imageToShow: null,
 
 
       complexityOptions: [
@@ -258,15 +259,27 @@ export default {
       this.steps_mass = [];
       this.notes_mass = [];
     },
-    handleImageUpload(event) {
+    handleImageUpload(event) { 
       const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      axios.post('http://localhost:8080/api/upload', formData)
+          .then(response => {
+            this.newRecipe.image = response.data;
+          })
+          .catch(error => {
+            console.error('Error uploading file:', error);
+          });
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          this.newRecipe.image = reader.result;
+          this.imageToShow = reader.result;
         };
         reader.readAsDataURL(file);
       }
+      
+     
     },
   },
 mounted() {

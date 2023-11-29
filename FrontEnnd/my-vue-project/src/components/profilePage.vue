@@ -90,9 +90,6 @@
                       this.username = response.data.user.firstName + " " + response.data.user.lastName;
                   })
                   .catch(error => {
-                    alert("Ви неавторизовані!");
-                      this.$router.push('/login');
-                      localStorage.removeItem('token');  // Display the error message
                       console.error(error);  // Log the entire error object for debugging
                   });
       },
@@ -110,7 +107,15 @@
       },
     },
     mounted() {
-  // Встановіть токен при створенні компонента
+//   // Встановіть токен при створенні компонента
+//   axios.post('http://localhost:8080/api/refresh',{},{withCredentials: true})
+//                   .then(response => {
+//                       localStorage.setItem('token',response.data.message);
+//                   })
+//                   .catch(error => {
+//                       alert('Error: ' + error.message);  // Display the error message
+//                       console.error(error);  // Log the entire error object for debugging
+//                   });
   const token = localStorage.getItem('token');
   if (token) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
