@@ -7,14 +7,16 @@ import com.example.crm.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
    private final RecipeRepository recipeRepository;
-//   public boolean createRecipe(Recipe recipe){
-//       recipeRepository.save(recipe);
-//       return true;
-//   }
+
+    public List<Recipe> getRecipes(){
+        return recipeRepository.findAll();
+    }
     public Recipe createRecipe(String name,
                              String ingredients,
                              String steps,

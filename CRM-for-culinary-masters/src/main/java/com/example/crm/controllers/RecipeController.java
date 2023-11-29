@@ -6,6 +6,7 @@ import com.example.crm.models.User;
 import com.example.crm.repositories.RecipeRepository;
 import com.example.crm.repositories.UserRepository;
 import com.example.crm.services.RecipeService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,10 +48,10 @@ public class RecipeController {
                          User user
     ) {
     }
-    /*    @GetMapping("/recipes")
-        public List<Recipe> getRecipes(){
-            return recipeRepository.findAll();
-        }*/
 
+    @GetMapping("/recipes")
+    public List<Recipe> getRecipes1() {
 
+        return recipeService.getRecipes();
+    }
 }

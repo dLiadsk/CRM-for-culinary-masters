@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,23 +15,51 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
-   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-   @JoinColumn
-   private User user;
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "ID")
    private Long menuId;
+
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @JoinColumn
+   private User user;
+
    @Column(name = "name")
    private String name;
 
-   @Column(name = "description")
-   private String description;
+   @Column(name = "notes")
+   private String notes;
+
+   @Column(name = "image")
+   private String image;
+
+   @Column(name = "preparationTime")
+   private String preparationTime;
+
+   @Column(name = "complexity")
+   private String complexity;
 
    @ManyToMany
    @JoinTable(
            name = "menu_recipes",
            joinColumns = @JoinColumn(name = "menu_id"),
            inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-   Set<Recipe> recipes;
+   List<Recipe> recipes;
+
+   public static Menu of(User user,
+                           String name,
+                           String notes,
+                           String image,
+                           String preparationTime,
+                           String complexity,
+                           List<Recipe> recipes) {
+      return new Menu(null, user,
+              name,
+              notes,
+              image,
+              preparationTime,
+              complexity,
+              recipes);
+   }
 }
