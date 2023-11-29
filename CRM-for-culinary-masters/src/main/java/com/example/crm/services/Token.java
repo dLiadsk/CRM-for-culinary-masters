@@ -36,7 +36,7 @@ public class Token {
     }
 
     public static Long from(String token, String secretKey) {
-        Claims claims = (Claims) Jwts.parserBuilder()
+        Claims claims = (Claims) Jwts.parserBuilder().setAllowedClockSkewSeconds(5)
                 .setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .parse(token)
