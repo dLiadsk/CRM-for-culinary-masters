@@ -6,9 +6,10 @@
           <div class="col">
             <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
               <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item active" aria-current="page"><a href="profile">User Profile</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="createRecipe">Create Recipe</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="createMenu">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
@@ -107,15 +108,6 @@
       },
     },
     mounted() {
-//   // Встановіть токен при створенні компонента
-//   axios.post('http://localhost:8080/api/refresh',{},{withCredentials: true})
-//                   .then(response => {
-//                       localStorage.setItem('token',response.data.message);
-//                   })
-//                   .catch(error => {
-//                       alert('Error: ' + error.message);  // Display the error message
-//                       console.error(error);  // Log the entire error object for debugging
-//                   });
   const token = localStorage.getItem('token');
   if (token) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;

@@ -7,9 +7,11 @@
           <div class="col">
             <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
               <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item" aria-current="page"><a href="profile">User Profile</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="createRecipe">Create Recipe</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="createMenu">Create Menu</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
           </div>
@@ -152,7 +154,7 @@
 </template>
 
 <script>
-import axios from "core-js/internals/queue";
+
 
 export default {
   data() {

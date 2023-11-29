@@ -44,7 +44,7 @@ public class Recipe {
 
 
     //
-   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
    @JoinColumn
     private User user;
 

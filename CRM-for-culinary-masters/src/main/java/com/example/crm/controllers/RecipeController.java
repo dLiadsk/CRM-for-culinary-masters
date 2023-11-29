@@ -9,7 +9,9 @@ import com.example.crm.services.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -47,10 +49,50 @@ public class RecipeController {
                          User user
     ) {
     }
-    /*    @GetMapping("/recipes")
-        public List<Recipe> getRecipes(){
-            return recipeRepository.findAll();
-        }*/
+        @GetMapping("/recipes")
+        public List<Recipe> getRecipes() {
+            return recipeService.findAll();
+        }
 
+        @GetMapping("/recipes/{id}")
+        public Recipe getRecipeById(@PathVariable Long id){
+            Optional<Recipe> recipe = recipeService.findById(id);
+            if(recipe.isPresent()){
+                return recipe.get();
+            } else {
+                throw new RuntimeException("Такого рецепту не існує");
+            }
+        }
+
+        @PostMapping("/myRecipes")
+        public List<Recipe> getRecipeByUser(@RequestBody User user){
+            List<Recipe> recipes = recipeService.findAll();
+            List<Recipe> userRecipes = new ArrayList<>();
+            for (Recipe rep: recipes){
+                if(rep.getUser().getUserId().equals(user.getUserId())){
+                    userRecipes.add(rep);
+                }
+            }
+            return userRecipes;
+        }
+
+        @GetMapping("/deleteRecipe/{id}")
+        public String deleteRecipe(@PathVariable Long id){
+            return recipeService.deleteById(id);
+        }
+
+        @PostMapping("/updateRecipe/{id}")
+        public String updateRecipe(@PathVariable Long id,@RequestBody RecipeRequest request){
+            Recipe recipe = Recipe.of(
+                    request.name(),
+                    request.ingredients(),
+                    request.steps(),
+                    request.notes(),
+                    request.image(),
+                    request.preparationTime(),
+                    request.complexity(),
+                    request.user());
+            return recipeService.updateRecipe(id,recipe);
+        }
 
 }

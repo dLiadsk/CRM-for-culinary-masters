@@ -39,14 +39,16 @@ export default {
     },
     created() {
   // Встановіть токен при створенні компонента
+  if(localStorage.getItem('token')){
   axios.post('http://localhost:8080/api/refresh',{},{withCredentials: true})
                   .then(response => {
                       localStorage.setItem('token',response.data.message);
                   })
                   .catch(error => {
-                      alert('Error: ' + error.message);  // Display the error message
+                      localStorage.removeItem('token');
                       console.error(error);  // Log the entire error object for debugging
                   });
+                }
 },
 }
 </script>

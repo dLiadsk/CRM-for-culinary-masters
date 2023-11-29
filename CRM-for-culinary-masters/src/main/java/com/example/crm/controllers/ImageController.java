@@ -1,8 +1,10 @@
 package com.example.crm.controllers;
 
 import com.example.crm.models.PhotoImage;
+import com.example.crm.models.Recipe;
 import com.example.crm.repositories.PhotoRepository;
 import com.example.crm.services.FileStorageService;
+import com.example.crm.services.RecipeService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
@@ -27,6 +29,9 @@ public class ImageController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Autowired
+    private RecipeService recipeService;
+
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
@@ -44,14 +49,14 @@ public class ImageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getPhoto(@PathVariable Long id) {
-        Optional<PhotoImage> optionalPhoto = photoRepository.findById(id);
+        Optional<Recipe> recipePhoto = recipeService.findById(id);
 
-        if (optionalPhoto.isPresent()) {
-            PhotoImage photo = optionalPhoto.get();
+        if (recipePhoto.isPresent()) {
+            Recipe recipe = recipePhoto.get();
 
             try {
                 // Зчитати байти з файлу
-                byte[] bytes = fileStorageService.readBytesFromFile("D:/photos/"+photo.getFileName());
+                byte[] bytes = fileStorageService.readBytesFromFile("D:/photos/recipes/"+recipe.getImage());
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.IMAGE_JPEG); // або MediaType.IMAGE_PNG

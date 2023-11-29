@@ -11,8 +11,9 @@ import menuPage from '@/components/menuPage.vue';
 import createRecipePage from '@/components/createRecipePage.vue';
 import createMenuPage from '@/components/createMenuPage.vue';
 import loginPage from '@/components/loginPage.vue';
-import Upload from '@/components/uplpadPage.vue';
-import download from '@/components/downloadPage.vue';
+import myRecipesPage from '@/components/myRecipes.vue';
+import updateRecipe from '@/components/updateRecipe.vue';
+
 
 const history = createWebHistory();
 const router = createRouter({
@@ -35,7 +36,7 @@ const router = createRouter({
             component: ContactsPage
         },
         {
-            path: '/recipeInfo',
+            path: '/recipeInfo/:id',
             component: recipeInfoPage
         },
         {
@@ -67,13 +68,13 @@ const router = createRouter({
             component: loginPage
         },
         {
-            path: '/uplpad',
-            component: Upload
+            path: "/myRecipes",
+            component: myRecipesPage
         },
         {
-            path: '/download',
-            component: download
-        },
+            path: "/updateRecipe/:id",
+            component: updateRecipe
+        }
     ]
 })
 

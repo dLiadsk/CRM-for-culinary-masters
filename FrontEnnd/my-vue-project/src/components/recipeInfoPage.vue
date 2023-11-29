@@ -2,7 +2,7 @@
   <div>
     <main class="d-flex justify-content-center align-items-center my-5 py-3">
       <div class="container">
-        <h1 class="text-center mb-4 pb-4 border-bottom border-4">ПУХКІ ТА СОКОВИТІ: ПИРІЖКИ З КАПУСТОЮ В ДУХОВЦІ ВІД ЄВГЕНА КЛОПОТЕНКА</h1>
+        <h1 class="text-center mb-4 pb-4 border-bottom border-4">{{ name }}</h1>
         <p class="text-center px-2">
           <span class="mx-5"><i class="fa-solid fa-heart me-1 fa-fw fa-xl"></i> 125</span>
           <span class="mx-5"><i class="fa-solid fa-heart-crack me-1 fa-fw fa-xl"></i> 25</span>
@@ -66,22 +66,44 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      imageSrc: require("@/assets/5.jpg"),
+      name: '',
+      imageSrc: '',
       author: "Username",
       authorLink: "#",
       preparationTime: "15 хвилин",
       complexity: "Середня",
-      ingredients: ["Тісто", "Капуста", "Ще щось"],
-      preparationSteps: [
-        "Для опари змішайте у мисці 100 мл теплої води і 100 мл теплого молока жирністю 2,5%, розкришіть 25 г живих дріжджів...",
-        "Залиште опару у теплому місці на 20 хвилин, аби дріжджі почали працювати. Повинна утворитися дріжджова «шапочка»...",
-        "Для тіста змішайте 500 г борошна додайте опару, 1 ч. л. солі, 1 яйце і рослинну олію (3 ст. л.). Замішайте дуже м'яке пластичне тісто..."
-      ],
+      ingredients: [],
+      preparationSteps: [],
+      recipe: []
     };
   },
+  methods: {
+   
+  },
+  mounted(){
+    axios.get('http://localhost:8080/api/recipes/'+this.$route.params.id)
+        .then(response => {
+          this.recipe = response.data;
+        this.name = this.recipe.name;
+        this.imageSrc = `http://localhost:8080/api/${this.recipe.recipeId}`;
+        this.author = this.recipe.user.username;
+        this.authorLink = '#';
+        this.preparationTime = this.recipe.preparationTime;
+
+        // Розділити рядки на масиви за роздільником "#"
+        this.ingredients = this.recipe.ingredients.split("#");
+        this.notes = this.recipe.notes.split("#");
+        this.preparationSteps = this.recipe.steps.split("#");
+                  })
+        .catch(error => {
+          console.error(error);  // Log the entire error object for debugging
+        });
+  }
 };
 </script>
 

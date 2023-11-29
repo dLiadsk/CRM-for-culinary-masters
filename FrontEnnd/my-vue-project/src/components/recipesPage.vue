@@ -1,50 +1,52 @@
 <template>
-    <div id="app" class="container mt-5">
-  <div class="row">
-    <div v-for="(recipe, index) in paginatedRecipes" :key="index" class="col-md-4">
-      <div class="card recipe-card" @click="navigateToRecipeInfo()">
-        <img :src="recipe.image" class="card-img-top" alt="Recipe Image">
-        <div class="card-body">
-          <h5 class="card-title text-center">{{ recipe.title }}</h5>
+  <div id="app" class="container mt-5">
+    <div class="row">
+      <div v-for="(recipe, index) in paginatedRecipes" :key="index" class="col-md-4">
+        <div class="card recipe-card" @click="navigateToRecipeInfo(recipe.id)">
+          <img :src="recipe.image" class="card-img-top" alt="Recipe Image" style="width: 415px; height: 200px;">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ recipe.title }}</h5>
+          </div>
         </div>
       </div>
     </div>
+
+    <nav class="align-items-center justify-content-center d-flex">
+      <ul class="pagination">
+        <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+          <a class="page-link" href="#" @click="prevPage">Previous</a>
+        </li>
+
+        <li v-for="page in totalPages" :key="page" class="page-item" :class="{ 'active': currentPage === page }">
+          <a class="page-link" href="#" @click="goToPage(page)">{{ page }}</a>
+        </li>
+
+        <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+          <a class="page-link" href="#" @click="nextPage">Next</a>
+        </li>
+      </ul>
+    </nav>
   </div>
-
-  <nav class="align-items-center justify-content-center d-flex">
-    <ul class="pagination">
-      <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-        <a class="page-link" href="#" @click="prevPage">Previous</a>
-      </li>
-
-      <li v-for="page in totalPages" :key="page" class="page-item" :class="{ 'active': currentPage === page }">
-        <a class="page-link" href="#" @click="goToPage(page)">{{ page }}</a>
-      </li>
-
-      <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-        <a class="page-link" href="#" @click="nextPage">Next</a>
-      </li>
-    </ul>
-  </nav>
-</div>
 </template>
 
 <style>
-    .recipe-card {
-      margin-bottom: 20px;
-    }
-  </style>
+.recipe-card {
+  margin-bottom: 20px;
+}
+</style>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
-        recipes: [
-      { title: 'ПУХКІ ТА СОКОВИТІ: ПИРІЖКИ З КАПУСТОЮ В ДУХОВЦІ ВІД ЄВГЕНА КЛОПОТЕНКА',  image: require('@/assets/5.jpg') },
-      // ... add more recipes
-    ],
-    itemsPerPage: 6,
-    currentPage: 1,
+      recipes: [
+    
+        // ... add more recipes
+      ],
+      recipesRaw: [],
+      itemsPerPage: 6,
+      currentPage: 1,
     };
   },
   computed: {
@@ -58,8 +60,8 @@ export default {
     },
   },
   methods: {
-    navigateToRecipeInfo(){
-        this.$router.push('/recipeInfo');
+    navigateToRecipeInfo(id) {
+      this.$router.push('/recipeInfo/'+ id);
     },
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
@@ -76,6 +78,23 @@ export default {
         this.currentPage += 1;
       }
     },
+    findAllRecipes() {
+      axios.get('http://localhost:8080/api/allRecipes')
+        .then(response => {
+          this.recipesRaw = response.data;
+          this.recipes = this.recipesRaw.map(recipe => ({
+            id: recipe.recipeId,
+            title: recipe.name,
+            image: `http://localhost:8080/api/${recipe.recipeId}`, // Assuming you have an 'id' property
+            }));
+                  })
+        .catch(error => {
+          console.error(error);  // Log the entire error object for debugging
+        });
+    },
   },
+  mounted() {
+    this.findAllRecipes()
+  }
 };
 </script>
