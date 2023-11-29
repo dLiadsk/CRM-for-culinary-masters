@@ -15,27 +15,48 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Recipe {
-//   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-//   @JoinColumn
-//   private User user;
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "ID")
-   private Long recipeId;
 
-   @Column(name = "name")
-   private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long recipeId;
 
-   @Column(name = "igridients")
-   private String ingridients;
 
-   @Column(name = "description")
-   private String description;
+    @Column(name = "name")
+    private String name;
 
-   @Column(name = "notes")
-   private String notes;
+    @Column(name = "igredients")
+    private String ingredients;
 
-   @Column(name = "publish_date")
-   private String image;
+    @Column(name = "steps")
+    private String steps;
+
+    @Column(name = "notes")
+    private String notes;
+    @Column(name = "image")
+    private String image;
+
+    @Column(name = "preparation_time")
+    private String preparationTime;
+
+    @Column(name = "complexity")
+    private String complexity;
+
+
+    //
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @JoinColumn
+    private User user;
+
+    public static Recipe of(String name,
+                            String ingredients,
+                            String steps,
+                            String notes,
+                            String image,
+                            String preparationTime,
+                            String complexity,
+                            User user) {
+        return new Recipe(null, name, ingredients, steps, notes, image, preparationTime, complexity, user);
+    }
 
 }

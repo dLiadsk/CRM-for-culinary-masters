@@ -74,10 +74,7 @@ public class UserController {
         return new LoginResponse(login.getAccessToken().getToken());
    }
 
-       record UserResponse(Long id,
-                               @JsonProperty("first_name") String firstName,
-                               @JsonProperty("last_name") String lastName,
-                               String email
+       record UserResponse(User user
        ){}
         @GetMapping("/user")
         public UserResponse user(HttpServletRequest request, HttpServletResponse response){
@@ -85,7 +82,7 @@ public class UserController {
 
             response.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
 
-            return new UserResponse(user.getUserId(),user.getFirstName(),user.getLastName(),user.getEmail());
+            return new UserResponse(user);
         }
 
 

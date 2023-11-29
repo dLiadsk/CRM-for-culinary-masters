@@ -193,9 +193,9 @@
         this.recipes.push({ ...this.newRecipe });
         this.newRecipe = {
           name: '',
-          ingredients: [''],
-          steps: [''],
-          notes: [''],
+          ingredients_mass: [''],
+          steps_mass: [''],
+          notes_mass: [''],
           image: null,
         };
       },
