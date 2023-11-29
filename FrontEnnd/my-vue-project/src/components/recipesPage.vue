@@ -79,7 +79,7 @@ export default {
       }
     },
     findAllRecipes() {
-      axios.get('http://localhost:8080/api/allRecipes')
+      axios.get('http://localhost:8080/api/recipes')
         .then(response => {
           this.recipesRaw = response.data;
           this.recipes = this.recipesRaw.map(recipe => ({

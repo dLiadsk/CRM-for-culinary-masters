@@ -256,7 +256,6 @@ export default {
         image: null,
         preparationTime: '',
         complexity: '',
-        user: '1',
       };
       this.ingredients_mass = [];
       this.steps_mass = [];

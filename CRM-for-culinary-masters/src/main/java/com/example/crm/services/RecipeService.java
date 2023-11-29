@@ -10,16 +10,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
    private final RecipeRepository recipeRepository;
 
 
-//   public boolean createRecipe(Recipe recipe){
-//       recipeRepository.save(recipe);
-//       return true;
-//   }
     public String deleteById(Long id){
         if(recipeRepository.existsById(id)){
             recipeRepository.deleteById(id);
@@ -50,9 +47,11 @@ public class RecipeService {
     public Optional<Recipe> findById(Long id){
         return recipeRepository.findById(id);
     }
-    public List<Recipe> findAll(){
+
+    public List<Recipe> getRecipes(){
         return recipeRepository.findAll();
     }
+
     public Recipe createRecipe(String name,
                              String ingredients,
                              String steps,
@@ -60,7 +59,6 @@ public class RecipeService {
                              String image,
                              String preparationTime,
                              String complexity,
-
                              User user) {
 
 
@@ -74,4 +72,5 @@ public class RecipeService {
                 complexity,
                 user));
     }
-}
+    }
+

@@ -6,6 +6,7 @@ import com.example.crm.models.User;
 import com.example.crm.repositories.RecipeRepository;
 import com.example.crm.repositories.UserRepository;
 import com.example.crm.services.RecipeService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +50,10 @@ public class RecipeController {
                          User user
     ) {
     }
+
         @GetMapping("/recipes")
         public List<Recipe> getRecipes() {
-            return recipeService.findAll();
+            return recipeService.getRecipes();
         }
 
         @GetMapping("/recipes/{id}")
@@ -66,7 +68,7 @@ public class RecipeController {
 
         @PostMapping("/myRecipes")
         public List<Recipe> getRecipeByUser(@RequestBody User user){
-            List<Recipe> recipes = recipeService.findAll();
+            List<Recipe> recipes = recipeService.getRecipes();
             List<Recipe> userRecipes = new ArrayList<>();
             for (Recipe rep: recipes){
                 if(rep.getUser().getUserId().equals(user.getUserId())){
