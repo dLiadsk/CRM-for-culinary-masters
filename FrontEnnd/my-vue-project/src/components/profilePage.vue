@@ -8,6 +8,7 @@
               <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item active" aria-current="page"><a href="profile">User Profile</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="createRecipe">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="createMenu">Create Recipe</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
@@ -86,7 +87,7 @@
       getUser(){
         axios.get('http://localhost:8080/api/user', {withCredentials: true})
                   .then(response => {
-                      this.username = response.data.first_name + " " + response.data.last_name;
+                      this.username = response.data.user.firstName + " " + response.data.user.lastName;
                   })
                   .catch(error => {
                     alert("Ви неавторизовані!");
