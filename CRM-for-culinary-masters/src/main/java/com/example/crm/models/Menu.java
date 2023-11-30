@@ -21,14 +21,14 @@ public class Menu {
    @Column(name = "ID")
    private Long menuId;
 
-   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+   @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
    @JoinColumn
    private User user;
 
-   @Column(name = "name")
+   @Column(name = "name", columnDefinition = "TEXT")
    private String name;
 
-   @Column(name = "notes")
+   @Column(name = "notes", columnDefinition = "TEXT")
    private String notes;
 
    @Column(name = "image")

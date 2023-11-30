@@ -36,7 +36,7 @@
                                 <ul class="list-group list-group-flush list-unstyled">
                                     <li v-for="(menu, index) in menus" :key="index" class="ms-2 py-1">
                                         <input class="form-check-input me-3" type="checkbox" disabled>
-                                        <a :href="`/menu/${menu.id}`" class="text-decoration-none text-black">{{ menu.name
+                                        <a :href="`/menuInfo/${menu.menuId}`" class="text-decoration-none text-black">{{ menu.name
                                         }}</a>
                                     </li>
                                 </ul>
@@ -58,13 +58,7 @@ export default {
             avatarSrc: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp",
             user: '',
             recipes: [],
-            menus: [
-                { id: 1, name: "Перше меню" },
-                { id: 2, name: "Друге меню" },
-                { id: 3, name: "Третє меню" },
-                { id: 4, name: "Четверте меню" },
-                { id: 5, name: "П'яте меню" },
-            ],
+            menus: [],
         };
     },
     methods: {
@@ -77,6 +71,13 @@ export default {
                 axios.post('http://localhost:8080/api/myRecipes', response.data)
                     .then(response => {
                         this.recipes = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);  // Log the entire error object for debugging
+                    });
+                    axios.post('http://localhost:8080/api/myMenus', response.data)
+                    .then(response => {
+                        this.menus = response.data;
                     })
                     .catch(error => {
                         console.error(error);  // Log the entire error object for debugging

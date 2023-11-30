@@ -1,22 +1,19 @@
 package com.example.crm.controllers;
 
-import com.example.crm.models.PhotoImage;
+import com.example.crm.models.Menu;
 import com.example.crm.models.Recipe;
-import com.example.crm.repositories.PhotoRepository;
 import com.example.crm.services.FileStorageService;
+import com.example.crm.services.MenuService;
 import com.example.crm.services.RecipeService;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Optional;
 
 @RestController
@@ -25,7 +22,7 @@ import java.util.Optional;
 public class ImageController {
 
     @Autowired
-    private PhotoRepository photoRepository;
+    private MenuService menuService;
     @Autowired
     private FileStorageService fileStorageService;
 
@@ -57,6 +54,29 @@ public class ImageController {
             try {
                 // Зчитати байти з файлу
                 byte[] bytes = fileStorageService.readBytesFromFile("D:/photos/recipes/"+recipe.getImage());
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_JPEG); // або MediaType.IMAGE_PNG
+
+                return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+            } catch (IOException e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/menus/{id}")
+    public ResponseEntity<byte[]> getPhotoMenus(@PathVariable Long id) {
+        Optional<Menu> menuPhoto = menuService.findById(id);
+
+        if (menuPhoto.isPresent()) {
+            Menu menu = menuPhoto.get();
+
+            try {
+                // Зчитати байти з файлу
+                byte[] bytes = fileStorageService.readBytesFromFile("D:/photos/recipes/"+menu.getImage());
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.IMAGE_JPEG); // або MediaType.IMAGE_PNG

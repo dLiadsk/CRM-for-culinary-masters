@@ -26,8 +26,8 @@
                 <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
               </h2>
               <div class="card" style="width: 81rem;">
-                <label for="recipeImage"  class="card-img-top text-center" style="position: relative; cursor: pointer;">
-                  <input type="file"  ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
+                <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
+                  <input type="file" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
                   <img v-if="newMenu.image" :src="imageToShow" alt="Recipe Image"
                        style="width: 100%; height: 500px;">
@@ -116,7 +116,7 @@
                   </li>
                 </ul>
                 <div class="card-body align-items-center justify-contetn-center text-center">
-                  <button class="card-link text-white text-decoration-none btn btn-success" type="submit">Створити
+                  <button class="card-link text-white text-decoration-none btn btn-success" type="submit">Оновити
                     меню
                   </button>
                 </div>
@@ -146,7 +146,6 @@ export default {
         complexity: '',
         recipes: [],
       },
-      imageToShow: '',
       author: "username",
 
       complexityOptions: [
@@ -177,10 +176,10 @@ export default {
           .then(response => {
             this.availableRecipes = response.data;
             // this.newRecipe.user = response.data.user;
-    })
-    .catch(error => {
-      alert(error);
-    });
+          })
+          .catch(error => {
+            alert(error);
+          });
     },
     addIngredient() {
       this.newMenu.recipes.push(''); // Додай цей рядок
@@ -202,49 +201,79 @@ export default {
 
       this.newMenu.notes = this.mass_notes.join("#")
 
-      // this.uploadImage();
-      axios.post('http://localhost:8080/api/createMenu', this.newMenu)
-          .then(response => {
-            alert("Success" + response.data);
-          })
+
+      axios.post('http://localhost:8080/api/updateMenu/'+this.$route.params.id, this.newMenu)
+          .then(this.$router.push("/myMenus"))
           .catch(error => {
             alert('Error: ' + error.message);  // Display the error message
             console.error(error);  // Log the entire error object for debugging
           });
-      this.$router.push("/myMenus")
-    },
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      const formData = new FormData();
-      formData.append('file', file);
-  
-      axios.post('http://localhost:8080/api/upload', formData)
-          .then(response => {
-            this.newMenu.image = response.data;
-          })
-          .catch(error => {
-            console.error('Error uploading file:', error);
-          });
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.imageToShow = reader.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-  },
-mounted() {
 
-  const token = localStorage.getItem('token');
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-    this.getUser();
-  } else {
-    alert("Ви не авторизовані")
-    this.$router.push('/login');
-  }
-  this.getRecipes();
+
+      this.mass_notes = [];
+      this.newMenu = {
+        name: '',
+        notes: '',
+        image: null,
+        preparationTime: '00:00',
+        complexity: '',
+        recipes: [],
+      };
+    },
+    handleImageUpload(event) { 
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        axios.post('http://localhost:8080/api/upload', formData)
+            .then(response => {
+              this.newMenu.image = response.data;
+            })
+            .catch(error => {
+              console.error('Error uploading file:', error);
+            });
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.imageToShow = reader.result;
+          };
+          reader.readAsDataURL(file);
+        }
+        
+       
+      },
+  },
+  mounted() {
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      this.getUser();
+    } else {
+      alert("Ви не авторизовані")
+      this.$router.push('/login');
+    }
+    this.getRecipes();
+
+
+
+    axios.get('http://localhost:8080/api/menu/'+this.$route.params.id)
+        .then(response => {
+          this.menu = response.data;
+          this.newMenu.name = this.menu.name;
+          this.newMenu.image = this.menu.image;
+          this.newMenu.user = this.menu.user;
+          this.newMenu.preparationTime = this.menu.preparationTime;
+          this.newMenu.recipes = this.menu.recipes;
+          this.newMenu.notes = this.menu.notes;
+          this.newMenu.complexity = this.menu.complexity;
+          //----------------------------------------------
+          this.mass_notes = this.menu.notes.split("#");
+          this.imageToShow = `http://localhost:8080/api/menus/${this.menu.menuId}`;
+        })
+        .catch(error => {
+          console.error(error);  // Log the entire error object for debugging
+        });
 
 
   }

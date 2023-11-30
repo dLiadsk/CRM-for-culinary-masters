@@ -29,7 +29,7 @@
               <div class="me-3">
                 <h5 class="mb-3"><i class="fa-solid fa-star fa-2xl"></i></h5>
                 <small>Складність</small>
-                <p>{{ complexity }}</p>
+                <p>{{ recipe.complexity }}</p>
               </div>
             </div>
           </div>
@@ -83,8 +83,6 @@ export default {
       ingredients: [],
       preparationSteps: [],
       recipe: [],
-      likeCount: '125',
-      dislikeCount: '29',
       likes: [],
       sendData: {
         user: '',
@@ -104,12 +102,12 @@ export default {
         this.sendData.reaction = '0'
       }
       axios.post('http://localhost:8080/api/saveReaction', this.sendData)
-        .then(this.getAllRecipe())
+        .then(this.getAllRecipeReaction())
         .catch(error => {
           console.error(error);  // Log the entire error object for debugging
         });
     },
-    getAllRecipe() {
+    getAllRecipeReaction() {
       axios.get('http://localhost:8080/api/getReactions/' + this.$route.params.id)
         .then(response => {
           this.likes = response.data.split('#');
@@ -138,7 +136,7 @@ export default {
       .catch(error => {
         console.error(error);  // Log the entire error object for debugging
       });
-      this.getAllRecipe();
+      this.getAllRecipeReaction();
   }
 };
 </script>

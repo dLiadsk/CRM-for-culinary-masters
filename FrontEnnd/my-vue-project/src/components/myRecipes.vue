@@ -1,19 +1,22 @@
 <template>
-    <div class="container py-5">
+    <div class="wrapper">
+        <div class="container py-5">
         <div class="row">
           <div class="col">
             <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
               <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Menu</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myMenus">My Menus</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
           </div>
         </div>
-    </div>
+        </div>
+    <h1 class="text-center">Ваші рецепти</h1>
     <main class="container menu mb-5 py-5 border border-5 text-center items-align-center justify-content-center" >
         <div class="table-responsive small">
             <table class="table">
@@ -40,8 +43,8 @@
                 </tbody>
             </table>
         </div>
-        <button class="btn btn-success text-white " @click="findAllUserRecipes()">Завантажити рецепти</button>
     </main>
+    </div>
 </template>
   
 <script>
@@ -63,7 +66,7 @@ export default {
             axios.get('http://localhost:8080/api/deleteRecipe/'+id)
                   .then(response => {
                       this.message = response.data;
-                      this.findAllUserRecipes();
+                      this.findAllUserRecipes(this.user);
                   })
                   .catch(error => {
                       console.error(error);  // Log the entire error object for debugging
@@ -72,8 +75,8 @@ export default {
       updateRecipe(id){
         this.$router.push('/updateRecipe/'+id)
       },
-      findAllUserRecipes(){
-        axios.post('http://localhost:8080/api/myRecipes',this.user)
+      findAllUserRecipes(data){
+        axios.post('http://localhost:8080/api/myRecipes',data)
                   .then(response => {
                       this.userRecipes = response.data;
                   })
@@ -89,6 +92,7 @@ export default {
             axios.get('http://localhost:8080/api/user', {withCredentials: true})
                   .then(response => {
                       this.user = response.data.user;
+                      this.findAllUserRecipes(response.data.user)
                   })
                   .catch(error => {
                       console.error(error);  // Log the entire error object for debugging
@@ -105,6 +109,10 @@ export default {
 </script>
   
 <style scoped>
-/* Add your styles here */
+.wrapper {
+display: flex;
+flex-direction: column;
+min-height: 76.5vh;
+}
 </style>
   
