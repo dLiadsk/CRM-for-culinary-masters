@@ -50,7 +50,7 @@
 </template>
     
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 
 export default {
     data() {
@@ -77,28 +77,28 @@ export default {
 
     },
     mounted() {
-        axios.get('http://localhost:8080/api/profile/' + this.$route.params.username)
-            .then(response => {
-                this.user = response.data
-                this.avatarSrc = `http://localhost:8080/api/userPhoto/${response.data.username}`;
-                axios.post('http://localhost:8080/api/myRecipes', response.data)
-                    .then(response => {
-                        this.recipes = response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);  // Log the entire error object for debugging
-                    });
-                    axios.post('http://localhost:8080/api/myMenus', response.data)
-                    .then(response => {
-                        this.menus = response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);  // Log the entire error object for debugging
-                    });
-            })
-            .catch(error => {
-                console.error(error);  // Log the entire error object for debugging
-            });
+        // axios.get('http://localhost:8080/api/profile/' + this.$route.params.username)
+        //     .then(response => {
+        //         this.user = response.data
+        //         this.avatarSrc = `http://localhost:8080/api/userPhoto/${response.data.username}`;
+        //         axios.post('http://localhost:8080/api/myRecipes', response.data)
+        //             .then(response => {
+        //                 this.recipes = response.data;
+        //             })
+        //             .catch(error => {
+        //                 console.error(error);  // Log the entire error object for debugging
+        //             });
+        //             axios.post('http://localhost:8080/api/myMenus', response.data)
+        //             .then(response => {
+        //                 this.menus = response.data;
+        //             })
+        //             .catch(error => {
+        //                 console.error(error);  // Log the entire error object for debugging
+        //             });
+        //     })
+        //     .catch(error => {
+        //         console.error(error);  // Log the entire error object for debugging
+        //     });
     },
 };
 

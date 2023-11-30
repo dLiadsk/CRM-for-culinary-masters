@@ -25,7 +25,7 @@
               <h2 class="text-center mb-4 pb-4 border-bottom border-4">
                 <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
               </h2>
-              <div class="card" style="width: 81rem;">
+              <div class="card" >
                 <label for="recipeImage"  class="card-img-top text-center" style="position: relative; cursor: pointer;">
                   <input type="file"  ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
@@ -260,6 +260,18 @@ mounted() {
   transform: translate(-50%, -50%);
 }
 
+@media (max-width: 767px) {
+  .d-flex {
+    flex-direction: column; /* Змінюємо напрямок на колонки */
+    align-items: center; /* Вирівнюємо елементи по центру */
+  }
+  .divider {
+    display: none; /* Ховаємо розділювачі в мобільній версії (або застосовуйте стилі за потребою) */
+  }
+  .mx-3 {
+    margin-bottom: 20px; /* Додаємо вертикальний відступ між блоками */
+  }
+}
 .divider {
   border-left: 2px solid #ccc;
   height: 50px;

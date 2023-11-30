@@ -8,7 +8,7 @@
         <span class="mx-5" @click="saveLike('dislike')"><i class="fa-solid fa-heart-crack me-1 fa-fw fa-xl"></i> {{
           likes[1] }}</span>
       </p>
-      <div class="card" style="width: 81rem;">
+      <div class="card" >
         <img class="card-img-top" :src="imageSrc" alt="Recipe Image" style="width: 100%; height: 500px;">
         <div class="card-body text-center">
           <div class="d-flex justify-content-center align-items-center">
@@ -160,6 +160,19 @@ export default {
 </script>
   
 <style scoped>
+
+@media (max-width: 767px) {
+  .d-flex {
+    flex-direction: column; /* Змінюємо напрямок на колонки */
+    align-items: center; /* Вирівнюємо елементи по центру */
+  }
+  .divider {
+    display: none; /* Ховаємо розділювачі в мобільній версії (або застосовуйте стилі за потребою) */
+  }
+  .mx-3 {
+    margin-bottom: 20px; /* Додаємо вертикальний відступ між блоками */
+  }
+}
 .divider {
   border-left: 2px solid #ccc;
   /* Лінія перегородки */
