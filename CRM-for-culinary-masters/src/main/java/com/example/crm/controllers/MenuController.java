@@ -60,7 +60,7 @@ public class MenuController {
     public String updateMenu(@PathVariable Long id,@RequestBody MenuController.MenuRequest request){
         Menu menu = Menu.of(
                 request.user(), request.name(), request.notes(), request.image(), request.preparationTime(), request.complexity(), request.recipes());
-        return menuService.updateRecipe(id,menu);
+        return menuService.updateMenu(id,menu);
     }
 
 

@@ -40,7 +40,7 @@ public class MenuService {
     }
 
 
-    public String updateRecipe(Long id,Menu recipe){
+    public String updateMenu(Long id,Menu recipe){
         if(menuRepository.existsById(id)){
             Menu recipeToEdit = menuRepository.findByMenuId(id);
             recipeToEdit.setName(recipe.getName());
