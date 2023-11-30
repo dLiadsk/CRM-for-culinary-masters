@@ -37,11 +37,12 @@
 
 <script>
 import axios from 'axios';
+
 export default {
   data() {
     return {
       recipes: [
-    
+
         // ... add more recipes
       ],
       recipesRaw: [],
@@ -61,7 +62,7 @@ export default {
   },
   methods: {
     navigateToRecipeInfo(id) {
-      this.$router.push('/recipeInfo/'+ id);
+      this.$router.push('/recipeInfo/' + id);
     },
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
@@ -80,17 +81,17 @@ export default {
     },
     findAllRecipes() {
       axios.get('http://localhost:8080/api/recipes')
-        .then(response => {
-          this.recipesRaw = response.data;
-          this.recipes = this.recipesRaw.map(recipe => ({
-            id: recipe.recipeId,
-            title: recipe.name,
-            image: `http://localhost:8080/api/${recipe.recipeId}`, // Assuming you have an 'id' property
+          .then(response => {
+            this.recipesRaw = response.data;
+            this.recipes = this.recipesRaw.map(recipe => ({
+              id: recipe.recipeId,
+              title: recipe.name,
+              image: `http://localhost:8080/api/${recipe.recipeId}`, // Assuming you have an 'id' property
             }));
-                  })
-        .catch(error => {
-          console.error(error);  // Log the entire error object for debugging
-        });
+          })
+          .catch(error => {
+            console.error(error);  // Log the entire error object for debugging
+          });
     },
   },
   mounted() {

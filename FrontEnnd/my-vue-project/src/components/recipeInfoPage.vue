@@ -26,7 +26,7 @@
               <div class="me-3">
                 <h5 class="mb-3"><i class="fa-solid fa-star fa-2xl"></i></h5>
                 <small>Складність</small>
-                <p>{{ complexity }}</p>
+                <p>{{ recipe.complexity }}</p>
               </div>
             </div>
           </div>

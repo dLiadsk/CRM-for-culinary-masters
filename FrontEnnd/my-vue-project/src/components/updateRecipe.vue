@@ -23,7 +23,7 @@
               <div class="container">
                 <h2 class="text-center mb-4 pb-4 border-bottom border-4">
                   <input v-model="newRecipe.name" id="recipeName" required style="width: 1200px;"
-                         placeholder="Введіть назве рецепта"/>
+                         placeholder="Введіть назву рецепта"/>
                 </h2>
                 <div class="card" style="width: 81rem;">
                   <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
@@ -137,31 +137,6 @@
           </div>
         </form>
       </div>
-  
-  
-      <div>
-        <h2>Збережені рецепти:</h2>
-        <ul>
-          <li v-for="(recipe, index) in recipes" :key="index">
-            <h3>{{ recipe.name }}</h3>
-  
-            <img :src="recipe.image" alt="Recipe Image" style="max-width: 100%;"/>
-  
-            <p><strong>Інгредієнти: {{ recipe.ingredients }}</strong></p>
-            <!--          <ul>-->
-            <!--            <li v-for="(ingredient, i) in recipe.ingredients" :key="i">{{ ingredient }}</li>-->
-            <!--          </ul>-->
-            <p><strong>Приготування: {{ recipe.steps }}</strong></p>
-            <!--          <ol>-->
-            <!--            <li v-for="(step, i) in recipe.steps" :key="i">{{ step }}</li>-->
-            <!--          </ol>-->
-            <p><strong>Примітки {{ recipe.notes }}</strong></p>
-            <!--          <ol>-->
-            <!--            <li v-for="(note, i) in recipe.notes" :key="i">{{ note }}</li>-->
-            <!--          </ol>-->
-          </li>
-        </ul>
-      </div>
     </div>
   </template>
   
@@ -171,7 +146,6 @@
   export default {
     data() {
       return {
-        recipes: [],
         ingredients_mass: [],
         steps_mass: [],
         notes_mass: [],

@@ -13,6 +13,8 @@ import createMenuPage from '@/components/createMenuPage.vue';
 import loginPage from '@/components/loginPage.vue';
 import myRecipesPage from '@/components/myRecipes.vue';
 import updateRecipe from '@/components/updateRecipe.vue';
+import myMenus from '@/components/myMenus.vue';
+import updateMenu from '@/components/updateMenu.vue';
 
 
 const history = createWebHistory();
@@ -44,7 +46,7 @@ const router = createRouter({
             component: profilePage
         },
         {
-            path: '/menuInfo',
+            path: '/menuInfo/:id',
             component: menuInfoPage
         },
         {
@@ -74,7 +76,19 @@ const router = createRouter({
         {
             path: "/updateRecipe/:id",
             component: updateRecipe
-        }
+        },
+        {
+            path: "/myMenus",
+            component: myMenus
+        },
+        {
+            path: "/updateRecipe/:id",
+            component: updateRecipe
+        },
+        {
+            path: "/updateMenu/:id",
+            component: updateMenu
+        },
     ]
 })
 

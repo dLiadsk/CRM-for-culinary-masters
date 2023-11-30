@@ -10,6 +10,7 @@
                 <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Recipe</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myMenus">My Menus</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
