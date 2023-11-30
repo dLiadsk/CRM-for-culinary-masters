@@ -13,6 +13,7 @@ import createMenuPage from '@/components/createMenuPage.vue';
 import loginPage from '@/components/loginPage.vue';
 import myRecipesPage from '@/components/myRecipes.vue';
 import updateRecipe from '@/components/updateRecipe.vue';
+import profileUserPage from '@/components/profileUserPage.vue';
 
 
 const history = createWebHistory();
@@ -74,6 +75,10 @@ const router = createRouter({
         {
             path: "/updateRecipe/:id",
             component: updateRecipe
+        },
+        {
+            path: "/profile/:username",
+            component: profileUserPage
         }
     ]
 })

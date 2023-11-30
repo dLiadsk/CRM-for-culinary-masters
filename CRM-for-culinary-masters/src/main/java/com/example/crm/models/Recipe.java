@@ -22,16 +22,16 @@ public class Recipe {
     private Long recipeId;
 
 
-    @Column(name = "name")
+    @Column(name = "name", columnDefinition = "TEXT")
     private String name;
 
-    @Column(name = "igredients")
+    @Column(name = "igredients",columnDefinition = "TEXT")
     private String ingredients;
 
-    @Column(name = "steps")
+    @Column(name = "steps",columnDefinition = "TEXT")
     private String steps;
 
-    @Column(name = "notes")
+    @Column(name = "notes",columnDefinition = "TEXT")
     private String notes;
     @Column(name = "image")
     private String image;

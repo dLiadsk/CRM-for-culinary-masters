@@ -77,4 +77,12 @@
 
         return Login.of(userId,accessTokenSecret, Token.of(refreshToken));
      }
+
+     public User findUserByUsername(String username){
+        if(userRepository.existsUserByUsername(username)){
+            return userRepository.findUserByUsername(username);
+        } else {
+            return new User();
+        }
+     }
  }

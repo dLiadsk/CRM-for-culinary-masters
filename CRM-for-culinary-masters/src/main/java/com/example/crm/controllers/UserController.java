@@ -107,5 +107,9 @@ public class UserController {
             return new LogoutResponse("Logout success");
         }
 
+        @GetMapping("/profile/{username}")
+        public User findUserByUsername(@PathVariable String username){
+            return userService.findUserByUsername(username);
+        }
 
 }
