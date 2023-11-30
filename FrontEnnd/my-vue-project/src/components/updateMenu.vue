@@ -202,7 +202,7 @@ export default {
       this.newMenu.notes = this.mass_notes.join("#")
 
 
-      axios.post('http://localhost:8080/api/updateRecipe/'+this.$route.params.id, this.newMenu)
+      axios.post('http://localhost:8080/api/updateMenu/'+this.$route.params.id, this.newMenu)
           .then(response => {
             alert("Success" + response.data);
           })
