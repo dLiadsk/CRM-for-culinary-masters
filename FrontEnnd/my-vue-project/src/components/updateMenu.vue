@@ -18,12 +18,14 @@
           </div>
         </div>
         </div>
-      <form @submit.prevent="addRecipe">
+      <form @submit.prevent="updateMenu">
         <div>
           <main class="d-flex justify-content-center align-items-center mb-5 pb-3">
             <div class="container">
               <h2 class="text-center mb-4 pb-4 border-bottom border-4">
-                <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
+                <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню" @input="clearError('name')"/>
+                <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть назву меню
+                </div>
               </h2>
               <div class="card" style="width: 81rem;">
                 <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
@@ -73,7 +75,13 @@
                 </div>
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" style="font-size: large">
-                    <h4 class="mb-2">Страви:</h4>
+                    <h4 class="mb-2">
+                      <div class="invalid-feedback" v-bind:class="{'d-block' : !recipesValid }">Оберість хоча б один рецепт
+                      </div>
+                      <div class="invalid-feedback" v-bind:class="{'d-block' : !copyRecipesValid }">Оберіть рецепти, які не повторюються
+                      </div>
+                      Страви:
+                    </h4>
                     <ul class="mb-0 list-unstyled">
                       <li v-for="(ingredient, index) in newMenu.recipes" :key="index">
                         <div class="input-group input-group-sm mb-3">
@@ -81,7 +89,7 @@
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
                           <select v-model="newMenu.recipes[index]" class="form-control" aria-label=""
-                                  aria-describedby="inputGroup-sizing-sm">
+                                  aria-describedby="inputGroup-sizing-sm" @change="clearError('recipes'); clearError('copyRecipes')">
                             <option value="" disabled selected>Select an recipe</option>
                             <option v-for="option in availableRecipes" :key="option" :value="option">{{
                                 option.name
@@ -135,6 +143,9 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      nameValid: true,
+      recipesValid: true,
+      copyRecipesValid: true,
       availableRecipes: [],
       mass_notes: [],
       newMenu: {
@@ -193,14 +204,32 @@ export default {
     removeNote(index) {
       this.mass_notes.splice(index, 1);
     },
-    addRecipe() {
-      // this.recipes.push({...this.newMenu});
-
+    clearError(fieldName) {
+      // Метод для приховання помилок при виправленні полів
+      this[fieldName + "Valid"] = true;
+    },
+    validateName() {
+      return !(this.newMenu.name.trim() === '');
+    },
+    validateRecipes() {
+      return (this.newMenu.recipes.length > 0);
+    },
+    validateCopyRecipes() {
+      let set = new Set(this.newMenu.recipes)
+      return (set.size === this.newMenu.recipes.length);
+    },
+    updateMenu() {
       this.newMenu.recipes = this.newMenu.recipes.filter(recipe => recipe !== '');
-      this.mass_notes = this.mass_notes.filter(note => note.trim() !== '');
+      this.nameValid = this.validateName()
+      this.recipesValid = this.validateRecipes()
+      this.copyRecipesValid = this.validateCopyRecipes()
 
-      this.newMenu.notes = this.mass_notes.join("#")
 
+      if (this.nameValid && this.recipesValid && this.copyRecipesValid) {
+
+        this.mass_notes = this.mass_notes.filter(note => note.trim() !== '');
+
+        this.newMenu.notes = this.mass_notes.join("#")
 
       axios.post('http://localhost:8080/api/updateMenu/'+this.$route.params.id, this.newMenu)
           .then(this.$router.push("/myMenus"))
@@ -208,23 +237,15 @@ export default {
             alert('Error: ' + error.message);  // Display the error message
             console.error(error);  // Log the entire error object for debugging
           });
-
-
-      this.mass_notes = [];
-      this.newMenu = {
-        name: '',
-        notes: '',
-        image: null,
-        preparationTime: '00:00',
-        complexity: '',
-        recipes: [],
-      };
-    },
-    handleImageUpload(event) { 
+    }
+      if (!this.recipesValid){
+        this.newMenu.recipes.push('')
+      }},
+    handleImageUpload(event) {
         const file = event.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
-    
+
         axios.post('http://localhost:8080/api/upload', formData)
             .then(response => {
               this.newMenu.image = response.data;
@@ -239,8 +260,8 @@ export default {
           };
           reader.readAsDataURL(file);
         }
-        
-       
+
+
       },
   },
   mounted() {

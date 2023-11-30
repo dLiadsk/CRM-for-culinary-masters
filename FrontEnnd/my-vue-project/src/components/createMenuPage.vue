@@ -17,17 +17,20 @@
             </nav>
           </div>
         </div>
-        </div>
-      <form @submit.prevent="addRecipe">
+      </div>
+      <form @submit.prevent="addMenu">
         <div>
           <main class="d-flex justify-content-center align-items-center mb-5 pb-3">
             <div class="container">
               <h2 class="text-center mb-4 pb-4 border-bottom border-4">
-                <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
+                <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;"
+                       placeholder="Введіть назву меню" @input="clearError('name')"/>
+                <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть назву меню
+                </div>
               </h2>
               <div class="card" style="width: 81rem;">
-                <label for="recipeImage"  class="card-img-top text-center" style="position: relative; cursor: pointer;">
-                  <input type="file"  ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
+                <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
+                  <input type="file" ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
                   <img v-if="newMenu.image" :src="imageToShow" alt="Recipe Image"
                        style="width: 100%; height: 500px;">
@@ -73,7 +76,13 @@
                 </div>
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" style="font-size: large">
-                    <h4 class="mb-2">Страви:</h4>
+                    <h4 class="mb-2">
+                      <div class="invalid-feedback" v-bind:class="{'d-block' : !recipesValid }">Оберість хоча б один рецепт
+                      </div>
+                      <div class="invalid-feedback" v-bind:class="{'d-block' : !copyRecipesValid }">Оберіть рецепти, які не повторюються
+                      </div>
+                      Страви:
+                    </h4>
                     <ul class="mb-0 list-unstyled">
                       <li v-for="(ingredient, index) in newMenu.recipes" :key="index">
                         <div class="input-group input-group-sm mb-3">
@@ -81,18 +90,18 @@
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
                           <select v-model="newMenu.recipes[index]" class="form-control" aria-label=""
-                                  aria-describedby="inputGroup-sizing-sm">
+                                  aria-describedby="inputGroup-sizing-sm" @change="clearError('recipes'); clearError('copyRecipes')">
                             <option value="" disabled selected>Select an recipe</option>
                             <option v-for="option in availableRecipes" :key="option" :value="option">{{
                                 option.name
                               }}
                             </option>
                           </select>
-                          <button type="button" class="btn" @click="removeIngredient(index)"><i
+                          <button type="button" class="btn" @click="removeRecipe(index)"><i
                               class="fa-solid fa-trash"></i></button>
                         </div>
                       </li>
-                      <button type="button" class="btn btn-light" @click="addIngredient">Додати рецепт</button>
+                      <button type="button" class="btn btn-light" @click="addRecipe">Додати рецепт</button>
                     </ul>
 
                   </li>
@@ -135,6 +144,9 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      nameValid: true,
+      recipesValid: true,
+      copyRecipesValid: true,
       availableRecipes: [],
       mass_notes: [],
       newMenu: {
@@ -150,9 +162,9 @@ export default {
       author: "username",
 
       complexityOptions: [
-        {value: 'easy', label: 'Легко'},
-        {value: 'medium', label: 'Середньо'},
-        {value: 'hard', label: 'Важко'},
+        {value: 'Легко', label: 'Легко'},
+        {value: 'Середньо', label: 'Середньо'},
+        {value: 'Важко', label: 'Важко'},
       ],
 
 
@@ -160,7 +172,7 @@ export default {
   },
   methods: {
     getUser() {
-      axios.get('http://localhost:8080/api/user', { withCredentials: true })
+      axios.get('http://localhost:8080/api/user', {withCredentials: true})
           .then(response => {
             this.author = response.data.user.username;
             this.newMenu.user = response.data.user;
@@ -176,48 +188,74 @@ export default {
       axios.get('http://localhost:8080/api/recipes')
           .then(response => {
             this.availableRecipes = response.data;
-            // this.newRecipe.user = response.data.user;
-    })
-    .catch(error => {
-      alert(error);
-    });
+          })
+          .catch(error => {
+            alert(error);
+          });
     },
-    addIngredient() {
+    addRecipe() {
       this.newMenu.recipes.push(''); // Додай цей рядок
     },
-    removeIngredient(index) {
+    removeRecipe(index) {
       this.newMenu.recipes.splice(index, 1);
     },
+
     addNote() {
       this.mass_notes.push('');
     },
     removeNote(index) {
       this.mass_notes.splice(index, 1);
     },
-    addRecipe() {
-      // this.recipes.push({...this.newMenu});
+    clearError(fieldName) {
+      // Метод для приховання помилок при виправленні полів
+      this[fieldName + "Valid"] = true;
+    },
+    validateName() {
+      return !(this.newMenu.name.trim() === '');
+    },
+    validateRecipes() {
+      return (this.newMenu.recipes.length > 0);
+    },
+    validateCopyRecipes() {
 
+      let set = new Set(this.newMenu.recipes)
+      return (set.size === this.newMenu.recipes.length);
+    },
+    addMenu() {
       this.newMenu.recipes = this.newMenu.recipes.filter(recipe => recipe !== '');
-      this.mass_notes = this.mass_notes.filter(note => note.trim() !== '');
 
-      this.newMenu.notes = this.mass_notes.join("#")
+      this.nameValid = this.validateName()
+      this.recipesValid = this.validateRecipes()
+      this.copyRecipesValid = this.validateCopyRecipes()
 
-      // this.uploadImage();
-      axios.post('http://localhost:8080/api/createMenu', this.newMenu)
-          .then(response => {
-            alert("Success" + response.data);
-          })
-          .catch(error => {
-            alert('Error: ' + error.message);  // Display the error message
-            console.error(error);  // Log the entire error object for debugging
-          });
-      this.$router.push("/myMenus")
+
+      if (this.nameValid && this.recipesValid && this.copyRecipesValid) {
+
+        this.mass_notes = this.mass_notes.filter(note => note.trim() !== '');
+
+        this.newMenu.notes = this.mass_notes.join("#")
+
+
+        // this.uploadImage();
+        axios.post('http://localhost:8080/api/createMenu', this.newMenu)
+            .then(response => {
+              alert("Success" + response.data);
+            })
+            .catch(error => {
+              alert('Error: ' + error.message);  // Display the error message
+              console.error(error);  // Log the entire error object for debugging
+            });
+        this.$router.push("/myMenus")
+      }
+      if (!this.recipesValid){
+        this.newMenu.recipes.push('')
+      }
     },
     handleImageUpload(event) {
       const file = event.target.files[0];
       const formData = new FormData();
       formData.append('file', file);
-  
+
       axios.post('http://localhost:8080/api/upload', formData)
           .then(response => {
             this.newMenu.image = response.data;
@@ -234,17 +272,17 @@ export default {
       }
     },
   },
-mounted() {
+  mounted() {
 
-  const token = localStorage.getItem('token');
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-    this.getUser();
-  } else {
-    alert("Ви не авторизовані")
-    this.$router.push('/login');
-  }
-  this.getRecipes();
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      this.getUser();
+    } else {
+      alert("Ви не авторизовані")
+      this.$router.push('/login');
+    }
+    this.getRecipes();
 
 
   }
