@@ -1,20 +1,27 @@
 <template>
-    <div>
-      <h2>Авторизація</h2>
-      <form @submit.prevent="login">
-        <label for="username">Ім'я користувача:</label>
-        <input type="email" id="username" v-model="user.email" required>
-  
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" v-model="user.password" required>
-  
-        <button type="submit">Увійти</button>
-      </form>
-      <div v-if="loggedIn">
-        <p>Ви успішно увійшли!</p>
-        <button @click="logout">Вийти</button>
-      </div>
+  <div class="wrapper">
+    <div class="container mt-5 p-5  border border-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 ">
+            <h2 class="text-center mb-3">Авторизація</h2>
+            <form @submit.prevent="login">
+                <div class="form-group d-flex align-items-center mb-3">
+                    <span><i class="fas fa-envelope fa-lg me-3 fa-fw"></i></span>
+                    <input type="email" class="form-control" id="email" placeholder="Введіть електронну пошту" v-model="user.email">
+                </div>
+                <div class="form-group d-flex align-items-center mb-3">
+                    <span><i class="fas fa-lock fa-lg me-3 fa-fw"></i></span>
+                    <input type="password" class="form-control" id="password" placeholder="Введіть пароль" v-model="user.password">
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary btn-block">Авторизуватись</button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+</div>
+<p class="text-center mt-3">Немає аккаунту? Реєстрація - <a class="text-decoration-none text-success" href="registration.html">тут</a></p>
   </template>
   
   <script>
@@ -56,3 +63,10 @@ import axios from 'axios';
 }
   </script>
   
+  <style scoped>
+  .wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 76.5vh;
+}
+</style>

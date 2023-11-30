@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container mt-5">
+  <div id="app" class="container mt-5 wrapper">
     <div class="row">
       <div v-for="(recipe, index) in paginatedRecipes" :key="index" class="col-md-4">
         <div class="card recipe-card" @click="navigateToRecipeInfo(recipe.id)">
@@ -99,3 +99,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.wrapper {
+display: flex;
+flex-direction: column;
+min-height: 76.5vh;
+}
+</style>

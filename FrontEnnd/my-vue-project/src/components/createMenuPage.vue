@@ -2,19 +2,22 @@
   <div>
     <!-- Форма для введення нового рецепту -->
     <div>
-      <div class="container pt-5">
+      <div class="container py-5">
         <div class="row">
           <div class="col">
             <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
               <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item" aria-current="page"><a href="profile">User Profile</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="createRecipe">Create Recipe</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="createMenu">Create Menu</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Menu</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myMenus">My Menus</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
               </ol>
             </nav>
           </div>
         </div>
-      </div>
+        </div>
       <form @submit.prevent="addRecipe">
         <div>
           <main class="d-flex justify-content-center align-items-center mb-5 pb-3">
@@ -23,10 +26,10 @@
                 <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню"/>
               </h2>
               <div class="card" style="width: 81rem;">
-                <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
-                  <input type="file" accept="image/*" @change="handleImageUpload" id="recipeImage"
+                <label for="recipeImage"  class="card-img-top text-center" style="position: relative; cursor: pointer;">
+                  <input type="file"  ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
-                  <img v-if="newMenu.image" :src="newMenu.image" alt="Recipe Image"
+                  <img v-if="newMenu.image" :src="imageToShow" alt="Recipe Image"
                        style="width: 100%; height: 500px;">
                   <small v-if="newMenu.image">Щоб змінити фото натисніть на нього</small>
                   <div v-if="!newMenu.image"
@@ -143,6 +146,7 @@ export default {
         complexity: '',
         recipes: [],
       },
+      imageToShow: '',
       author: "username",
 
       complexityOptions: [
@@ -198,7 +202,7 @@ export default {
 
       this.newMenu.notes = this.mass_notes.join("#")
 
-
+      // this.uploadImage();
       axios.post('http://localhost:8080/api/createMenu', this.newMenu)
           .then(response => {
             alert("Success" + response.data);
@@ -207,24 +211,24 @@ export default {
             alert('Error: ' + error.message);  // Display the error message
             console.error(error);  // Log the entire error object for debugging
           });
-
-
-      this.mass_notes = [];
-      this.newMenu = {
-        name: '',
-        notes: '',
-        image: null,
-        preparationTime: '00:00',
-        complexity: '',
-        recipes: [],
-      };
+      this.$router.push("/myMenus")
     },
     handleImageUpload(event) {
       const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      axios.post('http://localhost:8080/api/upload', formData)
+          .then(response => {
+            this.newMenu.image = response.data;
+          })
+          .catch(error => {
+            console.error('Error uploading file:', error);
+          });
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          this.newMenu.image = reader.result;
+          this.imageToShow = reader.result;
         };
         reader.readAsDataURL(file);
       }

@@ -1,9 +1,9 @@
 <template>
-  <div id="app" class="container mt-5">
+  <div id="app" class="container mt-5 wrapper">
     <div class="row">
       <div v-for="(menu, index) in paginatedMenus" :key="index" class="col-md-4">
         <div class="card recipe-card" @click="navigateToMenuInfo(menu.id)">
-          <img :src="menu.image" class="card-img-top" alt="Menu Image">
+          <img :src="menu.image" class="card-img-top" alt="Menu Image" style="width: 415px; height: 200px;">
           <div class="card-body">
             <h5 class="card-title text-center">{{ menu.title }}</h5>
           </div>
@@ -82,7 +82,7 @@ export default {
             this.menus = this.menusRaw.map(menus => ({
               id: menus.menuId,
               title: menus.name,
-              image: `http://localhost:8080/api/${menus.menuId}`, // Assuming you have an 'id' property
+              image: `http://localhost:8080/api/menus/${menus.menuId}`, // Assuming you have an 'id' property
             }));
           })
           .catch(error => {
@@ -95,3 +95,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.wrapper {
+display: flex;
+flex-direction: column;
+min-height: 76.5vh;
+}
+</style>

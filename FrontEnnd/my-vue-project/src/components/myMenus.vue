@@ -1,20 +1,22 @@
 <template>
-  <div class="container py-5">
-    <div class="row">
-      <div class="col">
-        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
-          <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Recipe</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="/myMenus">My Menus</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
-          </ol>
-        </nav>
-      </div>
-    </div>
-  </div>
+  <div class="wrapper">
+    <div class="container py-5">
+        <div class="row">
+          <div class="col">
+            <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+              <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Menu</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/myMenus">My Menus</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        </div>
+  <h1 class="text-center">Ваші меню</h1>
   <main class="container menu mb-5 py-5 border border-5 text-center items-align-center justify-content-center" >
     <div class="table-responsive small">
       <table class="table">
@@ -30,20 +32,19 @@
         <tr v-for="(item, index) in userMenus" :key="index">
           <td>{{ index + 1 }}</td>
           <td>{{ item.name }}</td>
-          <td></td>
-<!--          <td><img :src="`http://localhost:8080/api/${item.menuId}`" alt="err" style="width: 50px; height: 50px;"></td>-->
+         <td><img :src="`http://localhost:8080/api/menus/${item.menuId}`" alt="err" style="width: 50px; height: 50px;"></td>
           <td>
-            <a @click="showMenu(item.menuId)" title="Перегляд"><i class="fa-sharp fa-solid fa-eye"></i></a>
+            <a @click="showMenu(item.menuId)" title="Перегляд"><i class="fa-sharp fa-solid fa-eye fa-fw"></i></a>
             <a @click="updateMenu(item.menuId)" title="Редагувати" class="link-secondary"><i
-                class="fa-regular fa-pen-to-square"></i></a>
-            <a @click="deleteMenu(item.menuId)" title="Видалити" class="link-danger"><i class="fa-sharp fa-solid fa-trash"></i></a>
+                class="fa-regular fa-pen-to-square fa-fw"></i></a>
+            <a @click="deleteMenu(item.menuId)" title="Видалити" class="link-danger"><i class="fa-sharp fa-solid fa-trash fa-fw"></i></a>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <button class="btn btn-success text-white " @click="findAllUserMenus()">Завантажити меню</button>
   </main>
+  </div>
 </template>
 
 <script>
@@ -65,7 +66,7 @@ export default {
       axios.get('http://localhost:8080/api/deleteMenu/'+id)
           .then(response => {
             this.message = response.data;
-            this.findAllUserMenus();
+            this.findAllUserMenus(this.user);
           })
           .catch(error => {
             console.error(error);  // Log the entire error object for debugging
@@ -74,8 +75,8 @@ export default {
     updateMenu(id){
       this.$router.push('/updateMenu/'+id)
     },
-    findAllUserMenus(){
-      axios.post('http://localhost:8080/api/myMenus',this.user)
+    findAllUserMenus(data){
+      axios.post('http://localhost:8080/api/myMenus',data)
           .then(response => {
             this.userMenus = response.data;
           })
@@ -91,6 +92,7 @@ export default {
       axios.get('http://localhost:8080/api/user', {withCredentials: true})
           .then(response => {
             this.user = response.data.user;
+            this.findAllUserMenus(response.data.user);
           })
           .catch(error => {
             console.error(error);  // Log the entire error object for debugging
@@ -107,5 +109,9 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styles here */
+.wrapper {
+display: flex;
+flex-direction: column;
+min-height: 76.5vh;
+}
 </style>

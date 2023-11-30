@@ -8,7 +8,7 @@
               <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item active" aria-current="page"><a href="/profile">User Profile</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/createRecipe">Create Recipe</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Recipe</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/createMenu">Create Menu</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/myRecipes">My Recipes</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="/myMenus">My Menus</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a @click="Logout">Logout</a></li>
@@ -37,7 +37,7 @@
                 <ul class="list-group list-group-flush list-unstyled">
                   <li v-for="(recipe, index) in recipes" :key="index" class="ms-2 py-1">
                     <input class="form-check-input me-3" type="checkbox" disabled>
-                    <a :href="`/recipe/${recipe.id}`" class="text-decoration-none text-black">{{ recipe.name }}</a>
+                    <a :href="`/recipeInfo/${recipe.recipeId}`" class="text-decoration-none text-black">{{ recipe.name }}</a>
                   </li>
                 </ul>
               </div>
@@ -50,7 +50,7 @@
                 <ul class="list-group list-group-flush list-unstyled">
                   <li v-for="(menu, index) in menus" :key="index" class="ms-2 py-1">
                     <input class="form-check-input me-3" type="checkbox" disabled>
-                    <a :href="`/menu/${menu.id}`" class="text-decoration-none text-black">{{ menu.name }}</a>
+                    <a :href="`/menuInfo/${menu.menuId}`" class="text-decoration-none text-black">{{ menu.name }}</a>
                   </li>
                 </ul>
               </div>
@@ -69,20 +69,8 @@ export default {
     return {
       avatarSrc: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp",
       username: "",
-      recipes: [
-        { id: 1, name: "Перший рецепт" },
-        { id: 2, name: "Другий рецепт" },
-        { id: 3, name: "Третій рецепт" },
-        { id: 4, name: "Четвертий рецепт" },
-        { id: 5, name: "П'ятий рецепт" },
-      ],
-      menus: [
-        { id: 1, name: "Перше меню" },
-        { id: 2, name: "Друге меню" },
-        { id: 3, name: "Третє меню" },
-        { id: 4, name: "Четверте меню" },
-        { id: 5, name: "П'яте меню" },
-      ],
+      recipes: [],
+      menus: [],
     };
   },
   methods: {
@@ -90,6 +78,21 @@ export default {
       axios.get('http://localhost:8080/api/user', { withCredentials: true })
         .then(response => {
           this.username = response.data.user.firstName + " " + response.data.user.lastName;
+          this.user = response.data
+                axios.post('http://localhost:8080/api/myRecipes', response.data.user)
+                    .then(response => {
+                        this.recipes = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);  // Log the entire error object for debugging
+                    });
+                    axios.post('http://localhost:8080/api/myMenus', response.data.user)
+                    .then(response => {
+                        this.menus = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);  // Log the entire error object for debugging
+                    });
         })
         .catch(error => {
           console.error(error);  // Log the entire error object for debugging

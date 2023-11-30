@@ -4,8 +4,10 @@
       <div class="container">
         <h1 class="text-center mb-4 pb-4 border-bottom border-4">{{ name }}</h1>
         <p class="text-center px-2">
-          <span class="mx-5"><i class="fa-solid fa-heart me-1 fa-fw fa-xl"></i> 125</span>
-          <span class="mx-5"><i class="fa-solid fa-heart-crack me-1 fa-fw fa-xl"></i> 25</span>
+          <span class="mx-5" @click="saveLike('like')"><i class="fa-solid fa-heart me-1 fa-fw fa-xl"></i> {{ likes[0]
+          }}</span>
+          <span class="mx-5" @click="saveLike('dislike')"><i class="fa-solid fa-heart-crack me-1 fa-fw fa-xl"></i> {{
+            likes[1] }}</span>
         </p>
         <div class="card" style="width: 81rem;">
           <img class="card-img-top" :src="imageSrc" alt="Recipe Image" style="width: 100%; height: 500px;">
@@ -14,7 +16,8 @@
               <div class="me-3">
                 <h5 class="mb-3"><i class="fa-solid fa-user fa-fw fa-2xl"></i></h5>
                 <small>Автор</small>
-                <p><a :href="authorLink" class="text-decoration-none text-black">{{ author }}</a></p>
+                <p><a :href="'/profile/' + author.username" class="text-decoration-none text-black">{{ author.username
+                }}</a></p>
               </div>
               <div class="divider"></div>
               <div class="me-3">
@@ -79,19 +82,49 @@ export default {
       complexity: "Середня",
       ingredients: [],
       preparationSteps: [],
-      recipe: []
+      recipe: [],
+      likes: [],
+      sendData: {
+        user: '',
+        recipe: '',
+        reaction: '',
+        disReaction: ''
+      }
     };
   },
   methods: {
-   
-  },
-  mounted(){
-    axios.get('http://localhost:8080/api/recipes/'+this.$route.params.id)
+    saveLike(condition) {
+      if (condition === 'like') {
+        this.sendData.reaction = '1'
+        this.sendData.disReaction = '0'
+      } else {
+        this.sendData.disReaction = '1'
+        this.sendData.reaction = '0'
+      }
+      axios.post('http://localhost:8080/api/saveReaction', this.sendData)
+        .then(this.getAllRecipeReaction())
+        .catch(error => {
+          console.error(error);  // Log the entire error object for debugging
+        });
+    },
+    getAllRecipeReaction() {
+      axios.get('http://localhost:8080/api/getReactions/' + this.$route.params.id)
         .then(response => {
-          this.recipe = response.data;
+          this.likes = response.data.split('#');
+        }).catch(error => {
+          console.error(error);
+        })
+    }
+  },
+  mounted() {
+    axios.get('http://localhost:8080/api/recipes/' + this.$route.params.id)
+      .then(response => {
+        this.recipe = response.data;
+        this.sendData.recipe = response.data;
+        this.sendData.user = this.recipe.user;
         this.name = this.recipe.name;
         this.imageSrc = `http://localhost:8080/api/${this.recipe.recipeId}`;
-        this.author = this.recipe.user.username;
+        this.author = this.recipe.user;
         this.authorLink = '#';
         this.preparationTime = this.recipe.preparationTime;
 
@@ -99,18 +132,18 @@ export default {
         this.ingredients = this.recipe.ingredients.split("#");
         this.notes = this.recipe.notes.split("#");
         this.preparationSteps = this.recipe.steps.split("#");
-                  })
-        .catch(error => {
-          console.error(error);  // Log the entire error object for debugging
-        });
+      })
+      .catch(error => {
+        console.error(error);  // Log the entire error object for debugging
+      });
+      this.getAllRecipeReaction();
   }
 };
 </script>
 
 <style scoped>
-  .divider {
-    border-left: 2px solid #ccc;
-    height: 50px;
-    margin: 0 20px;
-  }
-</style>
+.divider {
+  border-left: 2px solid #ccc;
+  height: 50px;
+  margin: 0 20px;
+}</style>
