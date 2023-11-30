@@ -1,6 +1,8 @@
 package com.example.crm.controllers;
 
 import com.example.crm.models.User;
+import com.example.crm.models.UserPhoto;
+import com.example.crm.services.UserPhotoService;
 import com.example.crm.services.UserService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.servlet.http.Cookie;
@@ -9,7 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -20,6 +25,9 @@ public class UserController {
 
    @Autowired
    private UserService userService;
+
+   @Autowired
+   private UserPhotoService userPhotoService;
 
     @GetMapping("/login")
     public String login(){
@@ -37,25 +45,30 @@ public class UserController {
                           String father,
                           String gender
    ){}
-    record RegisterResponse(Long id,
-                            @JsonProperty("first_name") String firstName,
-                            @JsonProperty("last_name") String lastName,
-                            String email
-                            ){}
+//    record RegisterResponse(Long id,
+//                            @JsonProperty("first_name") String firstName,
+//                            @JsonProperty("last_name") String lastName,
+//                            String email
+//                            ){}
    @PostMapping("/registration")
-    public RegisterResponse register(@RequestBody RegisterRequest registerRequest){
-        var user = userService.createUser(
-                registerRequest.username(),
-                registerRequest.email(),
-                registerRequest.password(),
-                registerRequest.firstName(),
-                registerRequest.lastName(),
-                registerRequest.date(),
-                registerRequest.father(),
-                registerRequest.gender(),
-                registerRequest.phoneNumber()
-        );
-        return new RegisterResponse(user.getUserId(),user.getFirstName(),user.getLastName(),user.getEmail());
+    public String register(@RequestBody RegisterRequest registerRequest){
+        String message = null;
+         try {
+             userService.createUser(
+                     registerRequest.username(),
+                     registerRequest.email(),
+                     registerRequest.password(),
+                     registerRequest.firstName(),
+                     registerRequest.lastName(),
+                     registerRequest.date(),
+                     registerRequest.phoneNumber(),
+                     registerRequest.father(),
+                     registerRequest.gender()
+             );
+         } catch (Error e){
+             message = "Користувач з таким username вже існує";
+         }
+    return message;
    }
 
     record LoginRequest(String email, String password){}
@@ -110,6 +123,27 @@ public class UserController {
         @GetMapping("/profile/{username}")
         public User findUserByUsername(@PathVariable String username){
             return userService.findUserByUsername(username);
+        }
+
+        @PostMapping("/profile/updateUser")
+        public String updateUser(@RequestBody User user){
+            return userService.updateUser(user);
+        }
+
+        record photoRequest(User user, String image){}
+        @PostMapping("/profile/upload")
+        public String uploadPhoto(@RequestBody photoRequest photoRequest){
+            return userPhotoService.savePhoto(photoRequest.user(),photoRequest.image());
+        }
+
+        @GetMapping("/checkEmail/{email}")
+        public boolean email(@PathVariable String email){
+            return userService.email(email);
+        }
+
+        @GetMapping("/checkUsername/{username}")
+        public boolean username(@PathVariable String username){
+            return userService.username(username);
         }
 
 }

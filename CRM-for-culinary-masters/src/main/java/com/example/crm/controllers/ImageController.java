@@ -2,9 +2,9 @@ package com.example.crm.controllers;
 
 import com.example.crm.models.Menu;
 import com.example.crm.models.Recipe;
-import com.example.crm.services.FileStorageService;
-import com.example.crm.services.MenuService;
-import com.example.crm.services.RecipeService;
+import com.example.crm.models.User;
+import com.example.crm.models.UserPhoto;
+import com.example.crm.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +25,11 @@ public class ImageController {
     private MenuService menuService;
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserPhotoService userPhotoService;
 
     @Autowired
     private RecipeService recipeService;
@@ -77,6 +82,27 @@ public class ImageController {
             try {
                 // Зчитати байти з файлу
                 byte[] bytes = fileStorageService.readBytesFromFile("D:/photos/recipes/"+menu.getImage());
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_JPEG); // або MediaType.IMAGE_PNG
+
+                return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+            } catch (IOException e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/userPhoto/{username}")
+    public ResponseEntity<byte[]> getPhotoUser(@PathVariable String username) {
+        UserPhoto userPhoto = userPhotoService.getByUserId(userService.findUserByUsername(username));
+
+        if (userPhoto != null) {
+            try {
+                // Зчитати байти з файлу
+                byte[] bytes = fileStorageService.readBytesFromFile("D:/photos/recipes/"+userPhoto.getImage());
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.IMAGE_JPEG); // або MediaType.IMAGE_PNG

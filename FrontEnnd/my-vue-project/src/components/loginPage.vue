@@ -21,7 +21,7 @@
     </div>
 </div>
 </div>
-<p class="text-center mt-3">Немає аккаунту? Реєстрація - <a class="text-decoration-none text-success" href="registration.html">тут</a></p>
+<p class="text-center mt-3">Немає аккаунту? Реєстрація - <a class="text-decoration-none text-success" href="/registration">тут</a></p>
   </template>
   
   <script>

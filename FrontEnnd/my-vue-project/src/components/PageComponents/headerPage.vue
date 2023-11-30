@@ -23,9 +23,8 @@
                 <li><a href="reaction.html" class="nav-link px-2 link-secondary link-offset-2 link-offset-3-hover">REACTIONS</a></li> -->
             </ul>
             <div class="col-md-3 align-items-center text-end mb-2 mb-md-1 justify-content-center">
-                <a class="text-black" href="#"><i class="fa-solid fa-magnifying-glass me-1 fa-fw fa-lg" aria-hidden="true"></i></a>
+                <a class="text-black" href="/search"><i class="fa-solid fa-magnifying-glass me-1 fa-fw fa-lg" aria-hidden="true"></i></a>
                 <a class="text-black" href="/profile"><i class="fa-solid fa-circle-user me-1 fa-fw fa-lg" aria-hidden="true"></i></a>
-                <a class="text-black" href="#"><i class="fa fa-bars me-1 fa-fw fa-lg" aria-hidden="true"></i></a>
             </div>  
         </div>
     </div>

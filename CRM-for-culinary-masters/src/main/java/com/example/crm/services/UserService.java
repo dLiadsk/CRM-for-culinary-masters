@@ -14,6 +14,8 @@
  import org.springframework.web.bind.annotation.ResponseStatus;
  import org.springframework.web.server.ResponseStatusException;
 
+ import java.util.List;
+
  @Service
  public class UserService {
     private final UserRepository userRepository;
@@ -54,9 +56,9 @@
                 firstName,
                 lastName,
                 date,
+                phoneNumber,
                 father,
-                gender,
-                phoneNumber
+                gender
         ));
     }
 
@@ -84,5 +86,28 @@
         } else {
             return new User();
         }
+     }
+
+     public String updateUser(User user){
+         if(userRepository.existsById(user.getUserId())){
+             User userToChange = userRepository.findUserByUserId(user.getUserId());
+             userToChange.setFirstName(user.getFirstName());
+             userToChange.setLastName(user.getLastName());
+             userToChange.setFather(user.getFather());
+             userToChange.setGender(user.getGender());
+             userToChange.setDate(user.getDate());
+             userRepository.save(user);
+             return "success";
+         } else {
+             return "Такого користувача не існує";
+         }
+     }
+
+     public boolean email(String email){
+        return userRepository.existsUserByEmail(email);
+     }
+
+     public boolean username(String usernname){
+        return userRepository.existsUserByUsername(usernname);
      }
  }

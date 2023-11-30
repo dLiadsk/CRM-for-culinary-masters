@@ -28,7 +28,7 @@
                 <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть назву рецепта
                 </div>
               </h2>
-              <div class="card" style="width: 81rem;">
+              <div class="card" >
                 <label for="recipeImage" class="card-img-top text-center" style="position: relative; cursor: pointer;">
                   <input type="file" ref="fileInput" accept="image/*" @change="handleImageUpload" id="recipeImage"
                          style="position: absolute; top: 0; left: 0; opacity: 0; cursor: pointer;"/>
@@ -328,6 +328,18 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+@media (max-width: 767px) {
+  .d-flex {
+    flex-direction: column; /* Змінюємо напрямок на колонки */
+    align-items: center; /* Вирівнюємо елементи по центру */
+  }
+  .divider {
+    display: none; /* Ховаємо розділювачі в мобільній версії (або застосовуйте стилі за потребою) */
+  }
+  .mx-3 {
+    margin-bottom: 20px; /* Додаємо вертикальний відступ між блоками */
+  }
 }
 
 .divider {

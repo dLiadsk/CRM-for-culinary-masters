@@ -34,9 +34,10 @@ export default {
   },
     data() {
       return {
-      testdata: '',
+
       }
     },
+    methods: {},
     created() {
   // Встановіть токен при створенні компонента
   if(localStorage.getItem('token')){
