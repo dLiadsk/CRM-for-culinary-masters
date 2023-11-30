@@ -16,6 +16,7 @@ import updateRecipe from '@/components/updateRecipe.vue';
 import profileUserPage from '@/components/profileUserPage.vue';
 import myMenus from '@/components/myMenus.vue';
 import updateMenu from '@/components/updateMenu.vue';
+import searchPage from '@/components/SearchPage.vue';
 
 
 
@@ -95,6 +96,10 @@ const router = createRouter({
             path: "/updateMenu/:id",
             component: updateMenu
         },
+        {
+            path: "/search",
+            component: searchPage
+        }
     ]
 })
 

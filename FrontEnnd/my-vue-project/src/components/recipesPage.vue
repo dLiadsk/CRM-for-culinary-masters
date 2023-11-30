@@ -102,8 +102,20 @@ export default {
 
 <style scoped>
 .wrapper {
-display: flex;
-flex-direction: column;
-min-height: 76.5vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 76.5vh;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  flex-grow: 1;
+  margin-right: 10px;
 }
 </style>

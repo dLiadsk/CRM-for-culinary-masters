@@ -45,8 +45,7 @@
             <span><i class="fas fa-envelope fa-lg me-3 fa-fw"></i></span>
             <input type="email" class="form-control" id="email" v-model="user.email"
               placeholder="Введіть електронну пошту">
-            <div class="invalid-feedback" v-bind:class="{ 'd-block': !validateEmail(user.email) }">Введіть коректну
-              електронну пошту</div>
+            <div class="invalid-feedback" v-bind:class="{ 'd-block': !validateEmail(user.email) }">Електрона пошта введено не коректно, або така вже існує</div>
           </div>
           <div class="form-group d-flex align-items-center mb-3">
             <span><i class="fa fa-phone fa-lg me-3 fa-fw"></i></span>
@@ -79,7 +78,7 @@
 
 
   <p class="text-center mt-3">Маєте аккаунт? Авторизація - <a class="text-decoration-none text-success"
-      href="login.html">тут</a>
+      href="/login">тут</a>
   </p>
   <div>{{ testdata }}</div>
 </template>
@@ -102,17 +101,19 @@ export default {
 
       user: {
         username: '',
+        email: '',
+        password: '',
         firstName: '',
         lastName: '',
-        father: '',
-        gender: '',
-        email: '',
-        phoneNumber: '',
-        password: '',
         date: '',
+        phoneNumber: '',
+        father: '',
+        gender: '',        
       },
       users: [],
-      n: 1,
+      test: '',
+      userNameVadility: '',
+      emailValidity: '',
     };
   },
 
@@ -127,24 +128,30 @@ export default {
       let passwordIsValid = this.validatePassword(this.user.password);
       let dateIsValid = this.validateDate(this.user.date);
 
-
       if (firstNameIsValid && lastNameIsValid && fatherIsValid && genderIsValid && emailIsValid && phoneNumberIsValid && passwordIsValid && dateIsValid) {
-        this.users.push(Object.assign({}, this.user));
-        this.fetchMessage();
-        alert("Форма пройшла валідацію");
-        this.user.num = this.n++;
-        this.user = {
-          firstName: '',
-          lastName: '',
-          father: '',
-          email: '',
-          gender: '',
-          phoneNumber: '',
-          password: '',
-          date: '',
-        }
+        try {
+           
+        axios.get(`http://localhost:8080/api/checkUsername/${this.user.username}`).then(response => {
+            if (!response.data) {
+              axios.get(`http://localhost:8080/api/checkEmail/${this.user.email}`).then(response => {
+                if (!response.data) {
+                  this.fetchMessage();
+                  this.$router.push('/login');
+                } else {
+                  alert('Email already exits')
+                }
+              })
+            } else {
+              alert('Username already exits')
+            }
+          })
+
+
+     
         
-        // this.$router.push('/');
+      } catch (error) {
+        alert('Error checking username/email availability: ' + error.message);
+      }
       }
     },
     validateName(name) {
@@ -163,10 +170,10 @@ export default {
     },
     validateEmail(mail) {
       let emailPattern = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-      if (emailPattern.test(mail)) {
-        return true;
-      } else {
+      if (!emailPattern.test(mail) && this.emailValidity) {
         return false;
+      } else {
+        return true;
       }
     },
     validatePhone(number) {
@@ -190,24 +197,25 @@ export default {
         return true;
       }
     },
+    
     fetchMessage() {
   axios.post('http://localhost:8080/api/registration', this.user)
     .then(response => {
-      alert("Success" + response.data);
-    })
+      alert(response.data)
+    }
+    )
     .catch(error => {
       alert('Error: ' + error.message);  // Display the error message
       console.error(error);  // Log the entire error object for debugging
     });
 },
-    fetch() {
-      axios.get('http://localhost:8080/api/test')
-        .then(response => { this.testdata = response.data })
-        .catch(error => { alert('Error' + error) });
-    }
   },
   mounted() {
-    this.fetch()
+    const token = localStorage.getItem('token');
+    if (token) {
+      alert("Ви уже авторизовані")
+      this.$router.push('/profile');
+    }
   },
 
 

@@ -57,7 +57,7 @@
           </li>
         </ul>
         <div class="card-body">
-          <a href="#" class="card-link text-black text-decoration-none btn btn-info" @click="copyLink">Copy link</a>
+          <a href="#" class="card-link text-black text-decoration-none btn btn-info" @click="shareLink">Copy link</a>
         </div>
       </div>
     </div>
@@ -114,6 +114,17 @@ export default {
         })
         .catch(error => {
           console.error(error);  // Log the entire error object for debugging
+        });
+    },
+    shareLink() {
+      const pageURL = window.location.href;
+
+      navigator.clipboard.writeText(pageURL)
+        .then(() => {
+          alert('Page URL copied to clipboard!');
+        })
+        .catch((error) => {
+          console.error('Error copying to clipboard:', error);
         });
     },
 
