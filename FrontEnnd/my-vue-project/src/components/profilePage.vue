@@ -41,7 +41,7 @@
                     <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users on
                       the site)</label>
                     <input class="form-control" id="inputUsername" type="text" placeholder="Enter your username"
-                      v-model="user.username" disabled>
+                           v-model="user.username" disabled>
                   </div>
                   <!-- Form Row-->
                   <div class="row gx-3 mb-3">
@@ -49,13 +49,17 @@
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputFirstName">First name</label>
                       <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name"
-                        v-model="user.firstName">
-                    </div>
+                             v-model="user.firstName" @input="clearError('name')">
+
+                    <div class="invalid-feedback" v-bind:class="{ 'd-block': !nameValid }">Введіть коректно
+                    ім'я</div></div>
                     <!-- Form Group (last name)-->
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputLastName">Last name</label>
                       <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name"
-                        v-model="user.lastName">
+                             v-model="user.lastName" @input="clearError('lastName')">
+                      <div class="invalid-feedback" v-bind:class="{ 'd-block': !lastNameValid }">Введіть коректно
+                        прізвище</div>
                     </div>
                   </div>
                   <!-- Form Row        -->
@@ -63,8 +67,11 @@
                     <!-- Form Group (organization name)-->
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputOrgName">Middle name</label>
-                      <input class="form-control" id="inputOrgName" type="text" placeholder="Enter your organization name"
-                        v-model="user.father">
+                      <input class="form-control" id="inputOrgName" type="text"
+                             placeholder="Enter your organization name"
+                             v-model="user.father" @input="clearError('father')">
+                      <div class="invalid-feedback" v-bind:class="{ 'd-block': !fatherValid }">Введіть коректно
+                        по батькові</div>
                     </div>
                     <!-- Form Group (location)-->
                     <div class="col-md-6" v-if="user.gender !== undefined">
@@ -79,8 +86,9 @@
                   <!-- Form Group (email address)-->
                   <div class="mb-3">
                     <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                    <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address"
-                      v-model="user.email" disabled>
+                    <input class="form-control" id="inputEmailAddress" type="email"
+                           placeholder="Enter your email address"
+                           v-model="user.email" disabled>
                   </div>
                   <!-- Form Row-->
                   <div class="row gx-3 mb-3">
@@ -88,13 +96,15 @@
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputPhone">Phone number</label>
                       <input class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number"
-                        disabled v-model="user.phoneNumber">
+                             disabled v-model="user.phoneNumber">
                     </div>
                     <!-- Form Group (birthday)-->
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputBirthday">Birthday</label>
-                      <input class="form-control" id="inputBirthday" type="text" name="birthday"
-                        placeholder="Enter your birthday" v-model="user.date">
+                      <input class="form-control" id="inputBirthday" type="date" name="birthday"
+                             placeholder="Enter your birthday"  min="1900-01-01" max="2023-11-25" v-model="user.date" @input="clearError('date')">
+                      <div class="invalid-feedback" v-bind:class="{ 'd-block': !dateValid }">Введіть коректно
+                        дату народження</div>
                     </div>
                   </div>
                   <!-- Save changes button-->
@@ -108,12 +118,17 @@
     </section>
   </main>
 </template>
-  
+
 <script>
 import axios from 'axios';
+
 export default {
   data() {
     return {
+      nameValid: true,
+      lastNameValid: true,
+      fatherValid: true,
+      dateValid: true,
 
       avatarSrc: "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp",
       username: "",
@@ -123,54 +138,78 @@ export default {
         image: '',
       },
       genderOptions: [
-        { value: 'male', label: 'Чоловік' },
-        { value: 'female', label: 'Жінка' },
-        { value: 'other', label: 'Інше' },
+        {value: 'male', label: 'Чоловік'},
+        {value: 'female', label: 'Жінка'},
+        {value: 'other', label: 'Інше'},
       ],
     };
   },
   methods: {
     getUser() {
-      axios.get('http://localhost:8080/api/user', { withCredentials: true })
-        .then(response => {
-          this.username = response.data.user.firstName + " " + response.data.user.lastName;
-          this.user = response.data.user;
-          this.avatarSrc = `http://localhost:8080/api/userPhoto/${response.data.user.username}`;
-        })
-        .catch(error => {
-          console.error(error);  // Log the entire error object for debugging
-        });
+      axios.get('http://localhost:8080/api/user', {withCredentials: true})
+          .then(response => {
+            this.username = response.data.user.firstName + " " + response.data.user.lastName;
+            this.user = response.data.user;
+            this.avatarSrc = `http://localhost:8080/api/userPhoto/${response.data.user.username}`;
+          })
+          .catch(error => {
+            console.error(error);  // Log the entire error object for debugging
+          });
     },
+    clearError(fieldName) {
+      // Метод для приховання помилок при виправленні полів
+      this[fieldName + "Valid"] = true;
+    },
+    validateName(name) {
+      const chars = /[@#$%*&^!'"><)(-=_+]/;
+      return !(name.trim() === '' || /\d/.test(name) || chars.test(name));
+    },
+
+    validate(data) {
+      return data.trim() !== '';
+    },
+
     update() {
-      axios.post('http://localhost:8080/api/profile/updateUser', this.user)
-        .then(
-          alert("Інформацію про вас оновлено"),
-          this.fromData.user = this.user,
-          axios.post('http://localhost:8080/api/profile/upload',this.fromData)
-          .then(response => {alert(response.data)}).catch(error => {alert(error.message)})
-        )
-        .catch(error => {
-          alert('Error: ' + error.message);  // Display the error message
-          console.error(error);  // Log the entire error object for debugging
-        });
+      this.nameValid = this.validateName(this.user.firstName)
+      this.lastNameValid = this.validateName(this.user.lastName)
+      this.fatherValid = this.validateName(this.user.father)
+      this.dateValid = this.validate(this.user.date)
+
+      if (this.nameValid && this.lastNameValid && this.fatherValid && this.dateValid) {
+        axios.post('http://localhost:8080/api/profile/updateUser', this.user)
+            .then(
+                alert("Інформацію про вас оновлено"),
+                this.fromData.user = this.user,
+                axios.post('http://localhost:8080/api/profile/upload', this.fromData)
+                    .then(response => {
+                      alert(response.data)
+                    }).catch(error => {
+                  alert(error.message)
+                })
+            )
+            .catch(error => {
+              alert('Error: ' + error.message);  // Display the error message
+              console.error(error);  // Log the entire error object for debugging
+            });
+      }
     },
     Logout() {
       axios.post('http://localhost:8080/api/logout', {withCredentials: true})
-        .then(
-          alert("Ви розлогілись"),
-          localStorage.removeItem('token'),
-          this.$router.push('/login'),
-      )
-        .catch(error => {
-          alert('Error: ' + error.message);  // Display the error message
-          console.error(error);  // Log the entire error object for debugging
-        });
+          .then(
+              alert("Ви розлогілись"),
+              localStorage.removeItem('token'),
+              this.$router.push('/login'),
+          )
+          .catch(error => {
+            alert('Error: ' + error.message);  // Display the error message
+            console.error(error);  // Log the entire error object for debugging
+          });
     },
-    handleImageUpload(event) { 
+    handleImageUpload(event) {
       const file = event.target.files[0];
       const formData = new FormData();
       formData.append('file', file);
-  
+
       axios.post('http://localhost:8080/api/upload', formData)
           .then(response => {
             this.fromData.image = response.data;
@@ -185,10 +224,10 @@ export default {
         };
         reader.readAsDataURL(file);
       }
-      
-     
+
+
     },
-    
+
   },
   mounted() {
     const token = localStorage.getItem('token');
@@ -198,12 +237,12 @@ export default {
     } else {
       alert("Ви не авторизовані")
       this.$router.push('/login');
-    } 
+    }
   },
 };
 
 </script>
-  
+
 <style scoped>
 .wrapper {
   display: flex;

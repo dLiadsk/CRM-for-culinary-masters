@@ -25,7 +25,7 @@
               <h2 class="text-center mb-4 pb-4 border-bottom border-4">
                 <input v-model="newRecipe.name" id="recipeName" required style="width: 1200px;"
                        placeholder="Введіть назве рецепта" @input="clearError('name')"/>
-                <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть назву рецепта
+                <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть коректну назву рецепта
                 </div>
               </h2>
               <div class="card" >
@@ -78,8 +78,7 @@
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item" style="font-size: large">
                     <h4 class="mb-2">
-                      <div class="invalid-feedback" v-bind:class="{'d-block' : !ingredientValid }">Введіть хоча б один
-                        інгредієнт
+                      <div class="invalid-feedback" v-bind:class="{'d-block' : !ingredientValid }">Введіть коректні інгредієнти
                       </div>
                       Інгрідієнти:
                     </h4>
@@ -101,8 +100,7 @@
                   </li>
                   <li class="list-group-item">
                     <h4 class="mb-2">
-                      <div class="invalid-feedback" v-bind:class="{'d-block' : !stepsValid }">Введіть хоча б один крок
-                        пригутування
+                      <div class="invalid-feedback" v-bind:class="{'d-block' : !stepsValid }">Введіть коректні кроки пригутування
                       </div>
                       Спосіб приготування:
                     </h4>
@@ -124,7 +122,8 @@
                     </ul>
                   </li>
                   <li class="list-group-item">
-                    <h4 class="mb-0">Примітки: </h4>
+                    <h4 class="mb-0"><div class="invalid-feedback" v-bind:class="{'d-block' : !notesValid }">Введіть коректні примітки
+                    </div>Примітки: </h4>
                     <ul class="mb-0 list-unstyled">
                       <li v-for="(note, index) in notes_mass" :key="index">
                         <div class="input-group input-group-sm mb-3">
@@ -132,7 +131,7 @@
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
                           <input v-model="notes_mass[index]" placeholder="Крок приготування" type="text"
-                                 class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
+                                 class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm" @input="clearError('notes')">
                           <button type="button" class="btn" @click="removeNote(index)"><i
                               class="fa-solid fa-trash"></i></button>
                         </div>
@@ -165,6 +164,7 @@ export default {
       nameValid: true,
       ingredientValid: true,
       stepsValid: true,
+      notesValid: true,
       ingredients_mass: [],
       steps_mass: [],
       notes_mass: [],
@@ -229,24 +229,40 @@ export default {
     },
 
     validateName() {
-      return !(this.newRecipe.name.trim() === '');
+      const chars = /[@#$%*&^!'"><)(-=_+]/;
+      return !(this.newRecipe.name.trim() === '' || chars.test(this.newRecipe.name));
     },
     validateIngredients() {
+      const chars = /[@#$%*&^!'"><)(-=_+]/;
+      const isValidIngredients = this.ingredients_mass.every(function (ingredient){
+        return !chars.test(ingredient)
+      })
       this.ingredients_mass = this.ingredients_mass.filter(ingredient => ingredient.trim() !== '');
-      return (this.ingredients_mass.length > 0);
+      return (isValidIngredients && this.ingredients_mass.length > 0);
     },
     validateSteps() {
+      const chars = /[@#$%*&^!'"><)(-=_+]/;
+      const isValidSteps = this.steps_mass.every(function (step){
+        return !chars.test(step)
+      })
       this.steps_mass = this.steps_mass.filter(step => step.trim() !== '');
-      return (this.steps_mass.length > 0);
+      return (isValidSteps && this.steps_mass.length > 0);
+    },
+    validateNotes(){
+      const chars = /[#$%*&^!'"><)(-=_]/;
+      return  this.notes_mass.every(function (note){
+        return !chars.test(note)
+      })
     },
     addRecipe() {
 
       this.nameValid = this.validateName()
       this.ingredientValid = this.validateIngredients()
       this.stepsValid = this.validateSteps()
+      this.notesValid = this.validateNotes()
 
 
-      if (this.nameValid && this.ingredientValid && this.stepsValid) {
+      if (this.nameValid && this.ingredientValid && this.stepsValid && this.notesValid) {
 
         this.notes_mass = this.notes_mass.filter(note => note.trim() !== '');
 

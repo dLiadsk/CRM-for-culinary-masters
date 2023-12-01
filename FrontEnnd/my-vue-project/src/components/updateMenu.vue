@@ -24,7 +24,7 @@
             <div class="container">
               <h2 class="text-center mb-4 pb-4 border-bottom border-4">
                 <input v-model="newMenu.name" id="recipeName" required style="width: 1200px;" placeholder="Введіть назву меню" @input="clearError('name')"/>
-                <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть назву меню
+                <div class="invalid-feedback" v-bind:class="{'d-block' : !nameValid }">Введіть коректну назву меню
                 </div>
               </h2>
               <div class="card" style="width: 81rem;">
@@ -105,7 +105,8 @@
 
                   </li>
                   <li class="list-group-item">
-                    <h4 class="mb-0">Примітки: </h4>
+                    <h4 class="mb-0"><div class="invalid-feedback" v-bind:class="{'d-block' : !notesValid }">Введіть коректні примітки
+                    </div>Примітки: </h4>
                     <ul class="mb-0 list-unstyled">
                       <li v-for="(note, index) in mass_notes" :key="index">
                         <div class="input-group input-group-sm mb-3">
@@ -113,7 +114,7 @@
                             <span class="input-group-text" id="inputGroup-sizing-sm">{{ index + 1 }}</span>
                           </div>
                           <input v-model="mass_notes[index]" placeholder="Крок приготування" type="text"
-                                 class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
+                                 class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm" @input="clearError('notes')">
                           <button type="button" class="btn" @click="removeNote(index)"><i
                               class="fa-solid fa-trash"></i></button>
                         </div>
@@ -146,6 +147,8 @@ export default {
       nameValid: true,
       recipesValid: true,
       copyRecipesValid: true,
+      notesValid: true,
+
       availableRecipes: [],
       mass_notes: [],
       newMenu: {
@@ -209,7 +212,8 @@ export default {
       this[fieldName + "Valid"] = true;
     },
     validateName() {
-      return !(this.newMenu.name.trim() === '');
+      const chars = /[@#$%*&^!'"><)(-=_+]/;
+      return !(this.newMenu.name.trim() === '' || chars.test(this.newMenu.name));
     },
     validateRecipes() {
       return (this.newMenu.recipes.length > 0);
@@ -218,14 +222,20 @@ export default {
       let set = new Set(this.newMenu.recipes)
       return (set.size === this.newMenu.recipes.length);
     },
+    validateNotes(){
+      const chars = /[#$%*&^!'"><)(-=_]/;
+      return  this.mass_notes.every(function (note){
+        return !chars.test(note)
+      })
+    },
     updateMenu() {
       this.newMenu.recipes = this.newMenu.recipes.filter(recipe => recipe !== '');
       this.nameValid = this.validateName()
       this.recipesValid = this.validateRecipes()
       this.copyRecipesValid = this.validateCopyRecipes()
+      this.notesValid = this.validateNotes()
 
-
-      if (this.nameValid && this.recipesValid && this.copyRecipesValid) {
+      if (this.nameValid && this.recipesValid && this.copyRecipesValid && this.notesValid) {
 
         this.mass_notes = this.mass_notes.filter(note => note.trim() !== '');
 

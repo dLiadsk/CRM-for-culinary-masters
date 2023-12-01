@@ -155,7 +155,8 @@ export default {
       }
     },
     validateName(name) {
-      if (name.trim() === '' || /\d/.test(name)) {
+      const chars = /[@#$%*&^!'"><)(-=_+]/;
+      if (name.trim() === '' || /\d/.test(name) || chars.test(name)) {
         return false;
       } else {
         return true;

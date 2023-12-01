@@ -86,21 +86,21 @@ export default {
     }
   },
   created(){
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-    //   axios.get('http://localhost:8080/api/user', {withCredentials: true})
-    //       .then(response => {
-    //         this.user = response.data.user;
-    //         this.findAllUserMenus(response.data.user);
-    //       })
-    //       .catch(error => {
-    //         console.error(error);  // Log the entire error object for debugging
-    //       });
-    // } else {
-    //   alert("Ви не авторизовані")
-    //   this.$router.push('/login');
-    // }
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      axios.get('http://localhost:8080/api/user', {withCredentials: true})
+          .then(response => {
+            this.user = response.data.user;
+            this.findAllUserMenus(response.data.user);
+          })
+          .catch(error => {
+            console.error(error);  // Log the entire error object for debugging
+          });
+    } else {
+      alert("Ви не авторизовані")
+      this.$router.push('/login');
+    }
   },
   mounted() {
 
